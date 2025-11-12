@@ -1,0 +1,81 @@
+# ===================== 根目录直接忽略项 =====================
+# 根目录下的测试相关目录
+/test-resources/
+/test-front/
+
+# 根目录下的快捷方式、文档
+/*.lnk
+/*.docx
+/*.txt
+
+
+
+# ===================== 后端子目录（videoapp/）忽略项 =====================
+# 后端Maven相关
+videoapp/.mvn/wrapper/maven-wrapper.jar
+videoapp/target/
+!videoapp/**/src/main/**/target/
+!videoapp/**/src/test/**/target/
+
+# 后端IDE配置（STS/IDEA/NetBeans）
+videoapp/.apt_generated
+videoapp/.classpath
+videoapp/.factorypath
+videoapp/.project
+videoapp/.settings
+videoapp/.springBeans
+videoapp/.sts4-cache
+videoapp/.idea/
+videoapp/*.iws
+videoapp/*.iml
+videoapp/*.ipr
+videoapp/nbproject/private/
+videoapp/nbbuild/
+videoapp/dist/
+videoapp/nbdist/
+videoapp/.nb-gradle/
+videoapp/build/
+videoapp/.gitignore
+
+!videoapp/**/src/main/**/build/
+!videoapp/**/src/test/**/build/
+
+# 后端敏感配置（本地开发环境）
+videoapp/src/main/resources/application-dev.yml
+videoapp/src/main/resources/application-local.yml
+videoapp/src/main/resources/application-test.yml
+videoapp/src/main/resources/application.txt
+videoapp/src/main/resources/application.yml
+
+# ===================== 前端子目录（videoFront/）忽略项 =====================
+# 前端日志文件
+videoFront/logs/
+videoFront/*.log
+videoFront/npm-debug.log*
+videoFront/yarn-debug.log*
+videoFront/yarn-error.log*
+videoFront/pnpm-debug.log*
+videoFront/lerna-debug.log*
+
+# 前端依赖与构建产物
+videoFront/node_modules/
+videoFront/dist/
+videoFront/dist-ssr/
+videoFront/*.local
+
+# 前端编辑器配置
+videoFront/.vscode/*
+!videoFront/.vscode/extensions.json
+videoFront/.idea/
+videoFront/.DS_Store
+videoFront/*.suo
+videoFront/*.ntvs*
+videoFront/*.njsproj
+videoFront/*.sln
+videoFront/*.sw?
+videoFront/.gitignore
+
+#前端杂物
+videoFront/src/assets/images/image-notUse/
+
+

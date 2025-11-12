@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.videoapp.mapper.UserMapper">
+    <select id="findById" parameterType="Long" resultType="User">
+        SELECT id, userName, userPassword, createTime
+        FROM user
+        WHERE id = #{id}
+    </select>
+
+    <select id="findByIds" parameterType="Long" resultType="User">
+        SELECT id, userName, userPassword, createTime
+        FROM user
+        WHERE id IN
+            <foreach collection="ids"
+                     item="id"
+                     open="("
+                     close=")"
+                     separator=",">
+                #{id}
+            </foreach>
+    </select>
+
+    <insert id="createUser">
+        INSERT INTO user (userName, userPassword)
+        VALUE (#{userName},#{userPassword})
+    </insert>
+    
+    <select id="findByName" resultType="User">
+        SELECT id, userName, userPassword, createTime
+        FROM user
+        where userName = #{userName}
+    </select>
+
+</mapper>
