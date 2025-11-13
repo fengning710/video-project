@@ -74,7 +74,7 @@
                 userName: form.userName,
                 userPassword:form.password
             })
-            successMsg.value = `欢迎登录，${result.userName}`
+            successMsg.value = `欢迎登录，${result.user.userName}`
 
         }catch(error){
             errorMsg.value = error
