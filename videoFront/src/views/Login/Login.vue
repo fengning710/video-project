@@ -30,7 +30,7 @@
     // 导入 Vue 的 reactive 函数（用于创建响应式对象）
     import axios from 'axios'
     import { reactive,ref } from 'vue'
-    // import { useRouter } from 'vue-router'
+    import { useRouter,useRoute } from 'vue-router'
     import { userLogin } from '@/api/modules/userApi'
     // import { useUserStore } from '@/store/modules/user'
 
@@ -43,6 +43,9 @@
     const errorMsg = ref("")
     const successMsg = ref("")
     const loadingMsg = ref("登录中，请稍后...")
+    //新增路由，用来跳转页面
+    const router = useRouter()
+    const route = useRoute()
 
     //按钮点击函数（async异步操作，配合await使用）
     const toLogin = async() =>{
@@ -70,21 +73,32 @@
             //     }
             // )
             // const result = response.data
+
             const result = await userLogin({
                 userName: form.userName,
                 userPassword:form.password
             })
+            //存储数据到localStorage
+            localStorage.setItem("token",result.token)
+            localStorage.setItem("user",JSON.stringify(result.user))
+
+            //获取redirect参数，跳转到对应页面
+            const redirectPath = route.query.redirect || '/'
+
             successMsg.value = `欢迎登录，${result.user.userName}`
+            errorMsg.value = null
+            //跳转页面到首页
+            setTimeout(()=>{
+                router.push({path:redirectPath})
+            },1000)
 
         }catch(error){
-            errorMsg.value = error
+            errorMsg.value = error.response?.data?.message || '登录失败，请检查账号密码'
             successMsg.value = null
         }finally{
             loading.value = false
-        }
-        
+        } 
     }
-
 </script>
 
 <style scoped>

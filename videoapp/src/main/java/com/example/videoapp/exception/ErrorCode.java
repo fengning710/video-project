@@ -9,8 +9,9 @@ public enum ErrorCode {
     // 用户相关(预留注册功能)
     USER_NOT_FOUND(401, "用户不存在"),
     PASSWORD_ERROR(402, "密码错误"),
-    USER_NOT_LOGIN(403, "请先登录"),
+    USER_NOT_LOGIN(403, "未登录，请先登录"),
     USER_HAD_FOUND(404,"用户已存在"),
+    USER_WRONG_TOKEN(405,"token失效，请重新登录"),
 
     // 视频相关
     VIDEO_NOT_FOUND(411, "视频不存在"),
