@@ -6,25 +6,25 @@ const request = axios.create({
     baseURL: "http://localhost:8080",
     //baseURL: "http://192.168.1.48:8080", //测试地址(记得换对应IP 控制台ipconfig查询)
     timeout: 8000
-})
+});
 
 //请求拦截器（用于发起请求时向请求信息添加相关信息）
 request.interceptors.request.use(
     (config) => {
         //此处方便后续加token相关逻辑
-        const token = localStorage.getItem("token")
+        const token = localStorage.getItem("token");
         if(token){
             //添加请求头信息
-            config.headers.Authorization = `Bearer ${token}`
+            config.headers.Authorization = `Bearer ${token}`;
         }
         //返回
-        return config
+        return config;
     },
 
     //错误处理部分
     (error) => {
-        alert("请求发送失败，请检查网络")
-        return Promise.reject(error)
+        alert("请求发送失败，请检查网络");
+        return Promise.reject(error);
     }
 )
 
@@ -32,24 +32,24 @@ request.interceptors.request.use(
 request.interceptors.response.use(
     (response) => {
         //接收返回的结果内容（后端返回Result类）
-        const result = response.data
+        const result = response.data;
         
         //判断是否响应正确
         if(result.code == 200){
-            return result.data
+            return result.data;
         }
 
         //其他有响应但不是200的情况
 
         if(result.code == 403 || result.code == 405){  //未登录或登录过期
-            console.log(result.message)
-            localStorage.clear()
+            console.log(result.message);
+            localStorage.clear();
             //跳转登录页面
-            router.push(`/login?redirect=${router.currentRoute.value.fullPath}`)
-            return Promise.reject(result.message || "请重新登录")
+            router.push(`/login?redirect=${router.currentRoute.value.fullPath}`);
+            return Promise.reject(result.message || "请重新登录");
         }else{
-            console.log(`后端有响应，响应码为${result.code}，报错`)
-            return Promise.reject(result.message || "操作失败")
+            console.log(`后端有响应，响应码为${result.code}，报错`);
+            return Promise.reject(result.message || "操作失败");
         }
     },
 

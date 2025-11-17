@@ -10,5 +10,9 @@ import request from "../request";
  */
 
 export const userLogin = (params) =>{
-    return request.post("/login",params)
+    return request.post("/login",params);
+}
+
+export const userRegister = (params) =>{
+    return request.post("/register",params);
 }

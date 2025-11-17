@@ -21,7 +21,7 @@
             
             <button class="Login-btn" @click="toLogin">点击登录</button>
             <br/>
-            <p id="Login-nologin">没有账号？去<router-link to="">注册</router-link></p>
+            <p id="Login-nologin">没有账号？去<router-link to="/register">注册</router-link></p>
         </div>
     </div>
 </template>
@@ -38,32 +38,32 @@
     const form = reactive({
         userName: '', // 用户名初始值为空字符串
         password: ''  // 密码初始值为空字符串
-    })
-    const loading = ref(false)
-    const errorMsg = ref("")
-    const successMsg = ref("")
-    const loadingMsg = ref("登录中，请稍后...")
+    });
+    const loading = ref(false);
+    const errorMsg = ref("");
+    const successMsg = ref("");
+    const loadingMsg = ref("登录中，请稍后...");
     //新增路由，用来跳转页面
-    const router = useRouter()
-    const route = useRoute()
+    const router = useRouter();
+    const route = useRoute();
 
     //按钮点击函数（async异步操作，配合await使用）
     const toLogin = async() =>{
-        errorMsg.value = null
+        errorMsg.value = null;
         if(!form.userName.trim()){
-            errorMsg.value = "用户名不能为空"
-            successMsg.value = null
-            return
+            errorMsg.value = "用户名不能为空";
+            successMsg.value = null;
+            return;
         }
         if(!form.password.trim()){
-            errorMsg.value = "密码不能为空"
-            successMsg.value = null
-            return
+            errorMsg.value = "密码不能为空";
+            successMsg.value = null;
+            return;
         }
 
         try{
             //开始登录流程，渲染字样
-            loading.value = true
+            loading.value = true;
 
             //写aixos(注意变量名，随时更改)
             // const response = await axios.post("http://localhost:8080/login",
@@ -71,32 +71,32 @@
             //         userName: form.userName,
             //         userPassword:form.password
             //     }
-            // )
-            // const result = response.data
+            // );
+            // const result = response.data;
 
             const result = await userLogin({
                 userName: form.userName,
                 userPassword:form.password
-            })
+            });
             //存储数据到localStorage
-            localStorage.setItem("token",result.token)
-            localStorage.setItem("user",JSON.stringify(result.user))
+            localStorage.setItem("token",result.token);
+            localStorage.setItem("user",JSON.stringify(result.user));
 
             //获取redirect参数，跳转到对应页面
-            const redirectPath = route.query.redirect || '/'
+            const redirectPath = route.query.redirect || '/';
 
-            successMsg.value = `欢迎登录，${result.user.userName}`
-            errorMsg.value = null
+            successMsg.value = `欢迎登录，${result.user.userName}`;
+            errorMsg.value = null;
             //跳转页面到首页
             setTimeout(()=>{
                 router.push({path:redirectPath})
-            },1000)
+            },1000);
 
         }catch(error){
-            errorMsg.value = error.response?.data?.message || '登录失败，请检查账号密码'
-            successMsg.value = null
+            errorMsg.value = error.response?.data?.message || '登录失败，请检查账号密码';
+            successMsg.value = null;;
         }finally{
-            loading.value = false
+            loading.value = false;
         } 
     }
 </script>
@@ -143,22 +143,22 @@
     }
 
     /* 输入框专属样式，仅登录页生效 */
-.login-input {
-    width: 240px; /* 适配卡片宽度 */
-    height: 36px;
-    margin-left: 8px; /* 与标签隔开一点距离 */
-    padding: 0 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-}
-.login-input:focus {
-    outline: none;
-    border-color: aqua; /* 与按钮颜色呼应 */
-    box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.2); /* 聚焦高亮 */
-}
+    .login-input {
+        width: 240px; /* 适配卡片宽度 */
+        height: 36px;
+        margin-left: 8px; /* 与标签隔开一点距离 */
+        padding: 0 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+    .login-input:focus {
+        outline: none;
+        border-color: aqua; /* 与按钮颜色呼应 */
+        box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.2); /* 聚焦高亮 */
+    }
 
-.Login-nologin{
-    margin: 0 0 0 300px;
-}
+    .Login-nologin{
+        margin: 0 0 0 300px;
+    }
 </style>
