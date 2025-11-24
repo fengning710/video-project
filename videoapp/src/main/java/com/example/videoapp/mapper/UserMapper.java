@@ -1,6 +1,6 @@
 package com.example.videoapp.mapper;
 
-import com.example.videoapp.entity.User;
+import com.example.videoapp.model.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

@@ -1,15 +1,15 @@
 package com.example.videoapp.controller;
 
-import com.example.videoapp.entity.LoginResultVO;
-import com.example.videoapp.entity.User;
-import com.example.videoapp.entity.UserVO;
+import com.example.videoapp.model.vo.LoginResultVO;
+import com.example.videoapp.model.entity.User;
+import com.example.videoapp.model.vo.UserVO;
 import com.example.videoapp.service.UserService;
 import com.example.videoapp.util.JwtUtils;
 import com.example.videoapp.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import static com.example.videoapp.entity.UserVO.makeUserVO;
+import static com.example.videoapp.model.vo.UserVO.makeUserVO;
 
 @RestController
 public class UserController {

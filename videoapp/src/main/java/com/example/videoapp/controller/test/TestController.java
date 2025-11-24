@@ -1,7 +1,7 @@
-package com.example.videoapp.controller;
+package com.example.videoapp.controller.test;
 
 
-import com.example.videoapp.entity.User;
+import com.example.videoapp.model.entity.User;
 import com.example.videoapp.mapper.UserMapper;
 import com.example.videoapp.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,6 @@
-package com.example.videoapp.entity;
+package com.example.videoapp.model.vo;
+
+import com.example.videoapp.model.entity.User;
 
 import java.time.LocalDateTime;
 

@@ -7,7 +7,11 @@
             <input type="text" v-model="video"/>
             <button @click="updateVideo" id="btn">更新视频</button>
         </div>
-        <video controls :src="`http://localhost:8080/test/videoRange/${videoName}.mp4`" width="800" min-width="300">
+        <!-- <video controls :src="`http://localhost:8080/test/videoRange/${videoName}.mp4`" width="800" min-width="300">
+            您的浏览器不支持 video 标签。
+        </video> -->
+
+        <video controls :src="`http://localhost:8080/video/VMfengjin1`" width="800" min-width="300">
             您的浏览器不支持 video 标签。
         </video>
         

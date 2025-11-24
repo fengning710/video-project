@@ -1,4 +1,4 @@
-package com.example.videoapp.entity;
+package com.example.videoapp.model.vo;
 
 public class LoginResultVO {
     private UserVO user;

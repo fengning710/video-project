@@ -1,15 +1,12 @@
 package com.example.videoapp.service.impl;
 
-import com.example.videoapp.entity.User;
+import com.example.videoapp.model.entity.User;
 import com.example.videoapp.exception.BusinessException;
 import com.example.videoapp.exception.ErrorCode;
 import com.example.videoapp.service.UserService;
 import com.example.videoapp.mapper.UserMapper;
-import com.example.videoapp.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import static com.example.videoapp.entity.UserVO.makeUserVO;
 
 
 @Service

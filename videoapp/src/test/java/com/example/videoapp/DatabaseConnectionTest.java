@@ -1,6 +1,6 @@
 package com.example.videoapp;
 
-import com.example.videoapp.entity.User;
+import com.example.videoapp.model.entity.User;
 import com.example.videoapp.mapper.UserMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

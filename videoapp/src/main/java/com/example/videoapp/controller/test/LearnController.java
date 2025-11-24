@@ -1,4 +1,4 @@
-package com.example.videoapp.controller;
+package com.example.videoapp.controller.test;
 
 
 import com.example.videoapp.testDemo.mySQL.UserTest;

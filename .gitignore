@@ -43,7 +43,7 @@ videoapp/.gitignore
 # 后端敏感配置（本地开发环境）
 videoapp/src/main/resources/application-dev.yml
 videoapp/src/main/resources/application-local.yml
-videoapp/src/main/resources/application-test.yml
+videoapp/src/main/resources/application-private.yml
 videoapp/src/main/resources/application.txt
 videoapp/src/main/resources/application.yml
 

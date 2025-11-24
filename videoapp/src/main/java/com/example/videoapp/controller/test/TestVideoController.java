@@ -1,9 +1,10 @@
-package com.example.videoapp.controller;
+package com.example.videoapp.controller.test;
 
 import com.example.videoapp.exception.BusinessException;
 import com.example.videoapp.exception.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,7 +14,13 @@ import java.io.*;
 @RestController
 public class TestVideoController {
     //写死视频根目录
-    private static final String VIDEO_BASE_PATH = "D:\\document\\videoResource\\";
+//    private static final String VIDEO_BASE_PATH = "D:\\document\\videoResource\\";
+
+    private final String VIDEO_BASE_PATH;
+
+    public TestVideoController(@Value("${videoArea.baseUrl}") String videoAreaBaseUrl) {
+        this.VIDEO_BASE_PATH = videoAreaBaseUrl;
+    }
 
     @GetMapping("/test/video/{filename}")
     public void playVideo(@PathVariable String filename, HttpServletResponse response){
