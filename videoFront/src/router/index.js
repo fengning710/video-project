@@ -26,6 +26,11 @@ const routes = [
         }
     },
     {
+        path: '/profile',  // 个人主页 留待拓展  记得设登录验证
+        redirect: '/' 
+    },
+
+    {
         path: '/',
         component: MainLayout,
         children:[
@@ -37,7 +42,15 @@ const routes = [
                 }
             },
             {
-                path: '/video/',
+                path: 'video',       // 绝对前面不能加/
+                redirect: '/video/VMfengjin1'
+            },
+            {
+                path: 'video/', 
+                redirect: '/video/VMfengjin1'
+            },
+            {
+                path: 'video/:videoId',
                 component: Video,
                 meta:{
                     requiresAuth:false  //不需要登录验证

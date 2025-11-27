@@ -31,6 +31,12 @@ request.interceptors.request.use(
 //响应拦截器（收到后端返回结果后添加相关判断逻辑）
 request.interceptors.response.use(
     (response) => {
+
+        // 新增：如果是blob类型（视频流），直接返回response，不进入后续JSON逻辑
+        if (response.config.responseType === 'blob' || response.status === 206) {
+            return response; // 直接返回完整响应，包含blob数据
+        }
+
         //接收返回的结果内容（后端返回Result类）
         const result = response.data;
         
@@ -55,28 +61,32 @@ request.interceptors.response.use(
 
     //错误处理--后端无响应
     (error) => {
-    // 只处理 HTTP 非200（服务器层面的错误，和业务无关）
-    let errorMsg = '服务器异常，请稍后再试';
-    if (error.response) {
-      // 根据HTTP状态码给出精准提示（贴合服务器问题的定位）
-        switch (error.response.status) {
-            case 404:
-                errorMsg = '请求路径不存在（服务器提示：404）';
-                break;
-            case 500:
-                errorMsg = '服务器内部错误（服务器提示：500）';
-                break;
-            case 400:
-                errorMsg = '请求参数格式错误（服务器提示：400）';
-                break;
-            case 405:
-                errorMsg = '请求方式错误（比如用GET调用POST接口，服务器提示：405）';
-                break;
+        // 如果是206状态码，直接返回响应，不抛出错误
+        if (error.response && error.response.status === 206) {
+            return error.response;
         }
+        // 只处理 HTTP 非200（服务器层面的错误，和业务无关）
+        let errorMsg = '服务器异常，请稍后再试';
+        if (error.response) {
+        // 根据HTTP状态码给出精准提示（贴合服务器问题的定位）
+            switch (error.response.status) {
+                case 404:
+                    errorMsg = '请求路径不存在（服务器提示：404）';
+                    break;
+                case 500:
+                    errorMsg = '服务器内部错误（服务器提示：500）';
+                    break;
+                case 400:
+                    errorMsg = '请求参数格式错误（服务器提示：400）';
+                    break;
+                case 405:
+                    errorMsg = '请求方式错误（比如用GET调用POST接口，服务器提示：405）';
+                    break;
+            }
+        }
+        // 抛出服务器错误，让前端捕获提示
+        return Promise.reject(errorMsg);
     }
-    // 抛出服务器错误，让前端捕获提示
-    return Promise.reject(errorMsg);
-  }
 )
 
 export default request
