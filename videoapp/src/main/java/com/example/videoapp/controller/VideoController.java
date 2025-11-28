@@ -3,12 +3,15 @@ package com.example.videoapp.controller;
 import com.example.videoapp.exception.BusinessException;
 import com.example.videoapp.exception.ErrorCode;
 import com.example.videoapp.model.dto.VideoStreamInfo;
+import com.example.videoapp.model.vo.PageResult;
 import com.example.videoapp.service.VideoService;
+import com.example.videoapp.util.Result;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.FileInputStream;
@@ -45,7 +48,7 @@ public class VideoController {
             // 流传输
             try(
                     InputStream fis = new FileInputStream(info.getFilePath());
-                    OutputStream os = response.getOutputStream();
+                    OutputStream os = response.getOutputStream()
                     ){
                 // 跳过要传的字节
                 fis.skip(info.getStart());
@@ -77,5 +80,15 @@ public class VideoController {
             }
         }
 
+    }
+
+
+    @GetMapping("/videos/list")
+    public Result<PageResult> getVideoPageList(
+            @RequestParam(required = false) Long pageNum,
+            @RequestParam(required = false) Integer pageSize,
+            @RequestParam(required = false) String keyword
+    ){
+        return Result.success(videoService.getVideoPageList(pageNum, pageSize, keyword));
     }
 }

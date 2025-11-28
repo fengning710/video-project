@@ -15,4 +15,29 @@
         where vid = #{vid}
     </select>
 
+    <select id="findVideoList" resultType="Video">
+        SELECT *
+        from video
+        <!-- mybatis的特有标签 -->
+        <where>
+            is_deleted = 0  <!-- 查没有删的视频 -->
+            <if test="keyword != null and keyword != ''">
+                and title like #{keyword}          <!-- 成立则执行标签内的sql -->
+            </if>
+        </where>
+        order by createTime ASC  <!-- 改为desc为倒序 -->
+    </select>
+
+    <select id="findVideoTotal" resultType="java.lang.Long">
+        select count(*)
+        from video
+        <where>
+            is_deleted = 0
+            <if test="keyword != null and keyword != ''">
+                and title like #{keyword}
+            </if>
+        </where>
+        order by createTime ASC
+    </select>
+
 </mapper>

@@ -5,6 +5,8 @@ import com.example.videoapp.exception.ErrorCode;
 import com.example.videoapp.mapper.VideoMapper;
 import com.example.videoapp.model.dto.VideoStreamInfo;
 import com.example.videoapp.model.entity.Video;
+import com.example.videoapp.model.vo.PageResult;
+import com.example.videoapp.model.vo.VideoVO;
 import com.example.videoapp.service.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,8 +18,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.example.videoapp.model.vo.VideoVO.change;
 
 @Service
 public class VideoServiceImpl implements VideoService {
@@ -128,6 +134,46 @@ public class VideoServiceImpl implements VideoService {
         }
     }
 
+
+    @Override
+    public PageResult<VideoVO> getVideoPageList(Long pageNum, Integer pageSize, String keyword) {
+        if(pageNum == null || pageNum < 1){pageNum = 1l;}
+        if(pageSize == null || pageSize < 1 || pageSize > 50 ){pageSize = 10;}
+        if(keyword == null){keyword = "";}
+
+        // 拼接模糊查询关键词（mybatis要求语法）
+        String searchKeyword = "%" + keyword + "%";
+
+        // 查数据库
+        List<Video> videoList = videoMapper.findVideoList(searchKeyword);
+        Long total = videoMapper.findVideoTotal(searchKeyword);
+
+        // 计算各项数据
+        long totalPage = (total + pageSize - 1) / pageSize;// 标准向上取整写法
+          // 起始下标
+        int startIndex = (int)(pageSize * (pageNum - 1));
+          //结束下标，防止超总条数
+        int endIndex = (int)Math.min(startIndex + pageSize, total);
+
+        // 截取视频列表
+        List<Video> pageVideoList = new ArrayList<>();
+        if(startIndex < total){
+            pageVideoList = videoList.subList(startIndex, endIndex);
+        }
+
+        // 处理视频
+        List<VideoVO> pageVideoVOList = new ArrayList<>();
+        for(Video video : pageVideoList){
+            VideoVO pageVideoVO = change(video);
+            pageVideoVOList.add(pageVideoVO);
+        }
+
+        // 建返回列表
+        PageResult<VideoVO> pageResult = new PageResult<>(
+                pageVideoVOList,total,totalPage,pageNum,pageSize
+        );
+        return pageResult;
+    }
 
     @Override
     public Video getVideo(Long id) {
