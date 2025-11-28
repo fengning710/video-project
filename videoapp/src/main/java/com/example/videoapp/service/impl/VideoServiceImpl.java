@@ -33,8 +33,37 @@ public class VideoServiceImpl implements VideoService {
 
         // 验证文件名，防止路径穿越攻击 (非常重要！)
         String fileName = StringUtils.cleanPath(filename);
-        fileName = videoMapper.findVideoByVid(fileName).getFilePath();
-        Path videoPath = Paths.get(videoBasePath).resolve(fileName);
+
+        // 添加最终文件名存储，方便分2种方法查询
+        String fileNameHad = null;
+
+        // 记得添加按id查找的逻辑（用id查文件）
+        if(fileName == null){
+            throw new BusinessException(ErrorCode.PARAM_ERROR, "输入视频id或vid为空");
+        }
+        //判断是否VM(大小写不敏感)开头，是的转vid查询
+        if(fileName.regionMatches(true,0,"VM",0,2) && fileName.length() > 6){
+            //转前缀，防止出现小写情况
+            String prefix = fileName.substring(0, 2).toUpperCase();
+            String suffix = fileName.substring(2);
+            fileName = prefix + suffix;
+            fileNameHad = videoMapper.findVideoByVid(fileName).getFilePath();
+        }
+
+        if(fileNameHad == null){
+            try{
+                Long DataBaseId = Long.valueOf(fileName);
+                if(DataBaseId <= 0){
+                    throw new BusinessException(ErrorCode.PARAM_ERROR, "id为负");
+                }
+                System.out.println("视频id方式访问，id为" + DataBaseId);
+                fileNameHad = videoMapper.findVideoById(DataBaseId).getFilePath();
+            }catch (Exception e){
+                throw new BusinessException(ErrorCode.PARAM_ERROR, "视频id或vid出错");
+            }
+        }
+
+        Path videoPath = Paths.get(videoBasePath).resolve(fileNameHad);
         File file = videoPath.toFile();
 
         // 判断文件是否存在

@@ -61,16 +61,19 @@ public class VideoController {
                 }
 
             }
-
         }catch (Exception e){
+            String exceptionMeg = e.getMessage() == null ? "" : e.getMessage();
             if(e instanceof IOException){
                 if(e.getMessage().contains("中止了一个已建立的连接")){
-                    System.out.println("无需在意，不是什么错误--"+e.getMessage());
+                    System.out.println("无需在意，不是什么错误--" + exceptionMeg);
                 }else{
-                    throw new BusinessException(ErrorCode.SYSTEM_ERROR,"io问题");
+                    throw new BusinessException(ErrorCode.SYSTEM_ERROR,"视频读取失败(io)");
                 }
+                //以下新增对于在service抛出的异常的特定处理
+            }else if(e instanceof BusinessException){
+                    throw (BusinessException)e;
             }else{
-                throw new BusinessException(ErrorCode.SYSTEM_ERROR, e.getMessage());
+                throw new BusinessException(ErrorCode.SYSTEM_ERROR, exceptionMeg);
             }
         }
 
