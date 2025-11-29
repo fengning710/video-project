@@ -19,7 +19,7 @@ public class VideoVO {
     public VideoVO() {
     }
     // 静态方法转换
-    public static VideoVO change(Video video){
+    public static VideoVO makeVideoVO(Video video){
         VideoVO videoVO = new VideoVO();
         videoVO.setId(video.getId());
         videoVO.setVid(video.getVid());

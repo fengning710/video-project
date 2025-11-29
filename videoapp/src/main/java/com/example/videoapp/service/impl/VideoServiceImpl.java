@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.example.videoapp.model.vo.VideoVO.change;
+import static com.example.videoapp.model.vo.VideoVO.makeVideoVO;
 
 @Service
 public class VideoServiceImpl implements VideoService {
@@ -40,35 +40,10 @@ public class VideoServiceImpl implements VideoService {
         // 验证文件名，防止路径穿越攻击 (非常重要！)
         String fileName = StringUtils.cleanPath(filename);
 
-        // 添加最终文件名存储，方便分2种方法查询
-        String fileNameHad = null;
+        // 调用私有方法并且获取文件名（vid和id均适配）
+        String fileNameHad = findVideo(fileName).getFilePath();
 
-        // 记得添加按id查找的逻辑（用id查文件）
-        if(fileName == null){
-            throw new BusinessException(ErrorCode.PARAM_ERROR, "输入视频id或vid为空");
-        }
-        //判断是否VM(大小写不敏感)开头，是的转vid查询
-        if(fileName.regionMatches(true,0,"VM",0,2) && fileName.length() > 6){
-            //转前缀，防止出现小写情况
-            String prefix = fileName.substring(0, 2).toUpperCase();
-            String suffix = fileName.substring(2);
-            fileName = prefix + suffix;
-            fileNameHad = videoMapper.findVideoByVid(fileName).getFilePath();
-        }
-
-        if(fileNameHad == null){
-            try{
-                Long DataBaseId = Long.valueOf(fileName);
-                if(DataBaseId <= 0){
-                    throw new BusinessException(ErrorCode.PARAM_ERROR, "id为负");
-                }
-                System.out.println("视频id方式访问，id为" + DataBaseId);
-                fileNameHad = videoMapper.findVideoById(DataBaseId).getFilePath();
-            }catch (Exception e){
-                throw new BusinessException(ErrorCode.PARAM_ERROR, "视频id或vid出错");
-            }
-        }
-
+        // 拼接根目录和文件名 并且建文件类
         Path videoPath = Paths.get(videoBasePath).resolve(fileNameHad);
         File file = videoPath.toFile();
 
@@ -83,7 +58,7 @@ public class VideoServiceImpl implements VideoService {
         info.setFileTotalLength(fileLength);
         info.setMimeType(getContentType(file.toString())); //获取内容类型
 
-        // 4. 解析Range请求头，计算startByte和endByte
+        // 解析Range请求头，计算startByte和endByte
         if (StringUtils.hasText(rangeHeader)) {
             // 正则匹配Range格式（支持：bytes=0-1023、bytes=1024-、bytes=-512）
             Matcher matcher = Pattern.compile("bytes=(\\d+)-(\\d+)?").matcher(rangeHeader);
@@ -100,11 +75,11 @@ public class VideoServiceImpl implements VideoService {
             // 计算结束字节（endByte）
             String endGroup = matcher.group(2);
             long endByte = StringUtils.hasText(endGroup) ? Long.parseLong(endGroup) : fileLength - 1;
-            // 修正endByte：不能超过总长度-1，不能小于startByte
+            // endByte：不能超过总长度-1，不能小于startByte
             endByte = Math.min(endByte, fileLength - 1);
             endByte = Math.max(endByte, startByte);
 
-            // 4.4 赋值给info
+            // 赋值给info
             info.setStart(startByte);
             info.setEnd(endByte);
             info.setContentLength(endByte - startByte + 1); // 本次传输的字节数
@@ -117,9 +92,10 @@ public class VideoServiceImpl implements VideoService {
         return info;
     }
 
+    // 取视频文件类型私有方法
     private String getContentType(String filePath) {
         try {
-            // 用Java NIO的Files工具类自动探测文件类型（推荐，支持多种格式）
+            // 用Java NIO的Files工具类自动探测文件类型（支持多种格式）
             return Files.probeContentType(new File(filePath).toPath());
         } catch (IOException e) {
             // 异常时根据后缀名兜底（比如.mp4默认video/mp4）
@@ -134,7 +110,63 @@ public class VideoServiceImpl implements VideoService {
         }
     }
 
+    // 处理输入私有方法（返回视频实体类）
+    private Video findVideo(String fileName){
+        Video getVideo = null;
 
+        // 判空
+        if(fileName == null || fileName.isEmpty()){
+            throw new BusinessException(ErrorCode.PARAM_ERROR, "输入视频id或vid为空");
+        }
+
+        try{
+            // 进行vid判断
+            if (fileName.regionMatches(true, 0, "VM", 0, 2) && fileName.length() >= 6 && fileName.length() <= 20) {
+                // 添加正则并判断格式
+                String vidRegex = "^[0-9a-zA-Z]{4,18}$"; // 正则{}也可换成'+'(限制出现1次以上)
+                // 全字符串判断有无非法字符，有则方法返回false
+                if(!fileName.matches(vidRegex)){
+                    throw new BusinessException(ErrorCode.PARAM_ERROR, "视频id或vid出错(vid格式错误)");
+                }
+
+                // 调整vm标识的大小写问题
+                String prefix = fileName.substring(0, 2).toUpperCase();
+                String suffix = fileName.substring(2);
+                fileName = prefix + suffix;
+                getVideo = videoMapper.findVideoByVid(fileName);
+                if (getVideo == null) {
+                    throw new BusinessException(ErrorCode.VIDEO_NOT_FOUND);
+                }
+                return getVideo;
+            }
+
+            // 进行id判断
+            if(getVideo == null){
+                Long DataBaseId = Long.valueOf(fileName);
+                if(DataBaseId <= 0){
+                    throw new BusinessException(ErrorCode.PARAM_ERROR, "视频id或vid出错(id小于1)");
+                }
+                getVideo = videoMapper.findVideoById(DataBaseId);
+                if (getVideo == null) {
+                    throw new BusinessException(ErrorCode.VIDEO_NOT_FOUND);
+                }
+            }
+        }catch (Exception e){
+            if(e instanceof NumberFormatException){
+                // 业务异常：错误参数
+                throw new BusinessException(ErrorCode.PARAM_ERROR, "视频id或vid出错(错误参数)");
+            }else if(e instanceof BusinessException){
+                // 业务异常：数据库找不到相关内容
+                throw (BusinessException) e;
+            }
+            // 系统异常：数据库问题/其他问题
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, e.getMessage());
+        }
+        return getVideo;
+    }
+
+
+    // 列表取视频方法
     @Override
     public PageResult<VideoVO> getVideoPageList(Long pageNum, Integer pageSize, String keyword) {
         if(pageNum == null || pageNum < 1){pageNum = 1l;}
@@ -164,7 +196,7 @@ public class VideoServiceImpl implements VideoService {
         // 处理视频
         List<VideoVO> pageVideoVOList = new ArrayList<>();
         for(Video video : pageVideoList){
-            VideoVO pageVideoVO = change(video);
+            VideoVO pageVideoVO = makeVideoVO(video);
             pageVideoVOList.add(pageVideoVO);
         }
 
