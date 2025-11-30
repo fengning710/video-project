@@ -3,16 +3,16 @@ package com.example.videoapp.controller;
 import com.example.videoapp.exception.BusinessException;
 import com.example.videoapp.exception.ErrorCode;
 import com.example.videoapp.model.dto.VideoStreamInfo;
+import com.example.videoapp.model.dto.VideoUploadDTO;
+import com.example.videoapp.model.entity.Video;
 import com.example.videoapp.model.vo.PageResult;
 import com.example.videoapp.service.VideoService;
 import com.example.videoapp.util.Result;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -90,5 +90,16 @@ public class VideoController {
             @RequestParam(required = false) String keyword
     ){
         return Result.success(videoService.getVideoPageList(pageNum, pageSize, keyword));
+    }
+
+    @PostMapping("/video/upload")
+    public Result<Video> uploadVideo(VideoUploadDTO uploadDTO){
+        try{
+            return Result.success(videoService.uploadVideo(uploadDTO));
+        }catch (BusinessException e){
+            throw e;
+        }catch (Exception e){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "视频上传失败：" + e.getMessage());
+        }
     }
 }

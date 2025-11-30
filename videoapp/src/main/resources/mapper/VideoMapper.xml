@@ -7,12 +7,14 @@
         select *
         from video
         where id = #{id}
+          and is_deleted = 0  <!-- 只查未删除的视频 -->
     </select>
 
     <select id="findVideoByVid" resultType="Video">
         select *
         from video
         where vid = #{vid}
+          and is_deleted = 0  <!-- 只查未删除的视频 -->
     </select>
 
     <select id="findVideoList" resultType="Video">
@@ -39,5 +41,26 @@
         </where>
         order by createTime ASC
     </select>
+
+    <!-- 插入视频sql语句 -->
+    <insert id="insertVideo" parameterType="Video">
+        INSERT INTO video (
+            vid,
+            title,
+            description,
+            file_path,
+            cover_path,
+            user_id,
+            is_deleted
+        ) VALUES (
+            #{vid},
+            #{title},
+            #{description},
+            #{filePath},
+            #{coverPath},
+            #{userId},
+            #{isDeleted}
+        )
+    </insert>
 
 </mapper>

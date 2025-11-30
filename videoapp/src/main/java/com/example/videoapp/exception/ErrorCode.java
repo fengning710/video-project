@@ -16,6 +16,8 @@ public enum ErrorCode {
     // 视频相关
     VIDEO_NOT_FOUND(411, "视频不存在"),
     VIDEO_NO_PERMISSION(412, "无权限访问该视频"),
+    VIDEO_TOO_MAX(413, "视频大小超出上传限制"),
+    VIDEO_INVALID_TYPE(414, "上传视频格式错误"),
 
     // 评论相关
     COMMENT_NOT_FOUND(421, "评论不存在"),
