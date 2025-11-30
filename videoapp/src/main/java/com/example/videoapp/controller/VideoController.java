@@ -26,6 +26,10 @@ public class VideoController {
 
     @GetMapping("/video/{videoId}")
     public void playVideo(@PathVariable String videoId, HttpServletRequest request, HttpServletResponse response){
+        // 测试使用
+//        String rangeHeader1 = request.getHeader("Range");
+//        System.out.println("收到的Range头：" + (rangeHeader1 == null ? "null" : rangeHeader1));
+
         try{
             // 获取请求头
             String rangeHeader = request.getHeader("Range");

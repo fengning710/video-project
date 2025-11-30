@@ -4,7 +4,7 @@ import router from "../router";
 const request = axios.create({
     //后端根地址(后端接口的公共前缀)
     baseURL: "http://localhost:8080",
-    //baseURL: "http://192.168.1.48:8080", //测试地址(记得换对应IP 控制台ipconfig查询)
+    //baseURL: "http://192.168.81.48:8080", //测试地址(记得换对应IP 控制台ipconfig查询)
     timeout: 8000
 });
 

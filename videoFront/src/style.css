@@ -73,7 +73,8 @@ button:focus-visible {
 }*/
 #app {
   width: 100%;       /* 宽度占满父元素（body） */
-  height: 100%;      /* 高度占满父元素（body） */
+  /* height: 100%;      /* 高度占满父元素（body） */
+   height: auto; 
   max-width: none;   /* 取消最大宽度限制，随屏幕变宽 */
   margin: 0;         /* 取消居中margin，避免左右空白 */
   padding: 0;        /* 取消内边距，让内容贴边 */
@@ -106,5 +107,5 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden; /* 可选：避免出现滚动条导致的白边 */
+  /* overflow: hidden;  可选：避免出现滚动条导致的白边 */
 }
