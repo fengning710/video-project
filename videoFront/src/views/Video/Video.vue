@@ -1,123 +1,190 @@
 <template>
-  <div class="video-container">
-    <h1>视频页面</h1>
-    <p>这里是视频播放和管理的页面。</p>
-    
-    <div>
-      <p>当前视频ID/VID：{{ currentVideoId || '未选择' }}</p>
-      <input 
-        type="text" 
-        v-model="inputValue" 
-        placeholder="输入视频ID或VID（如1/VMfengjin1）"
-      />
-      <button @click="goToVideo" id="btn">跳转播放</button>
-    </div>
+    <div class="video-container">
+        <h1>视频页面</h1>
+        <p>这里是视频播放和管理的页面。</p>
+        
+        <div>
+            <p>当前视频id/vid：{{ currentVideoId || '未选择' }}</p>
+            <input 
+                type="text" 
+                v-model="inputValue" 
+                placeholder="输入视频id或vid（如1/VMfengjin1）"
+            />
+            <button @click="goToVideo" id="btn">跳转播放</button>
+        </div>
 
-    <!-- 核心：video直接对接后端接口，无中间层 -->
-    <video 
-      controls 
-      playsinline
-      :src="currentVideoId ? `http://192.168.81.48:8080/video/${currentVideoId}` : ''"
-      width="800" 
-      min-width="300"
-      style="display: block; margin-top: 20px; border: 1px solid #eee;"
-      v-if="currentVideoId"
-      @progress="handleProgress"
-      @loadedmetadata="handleLoadedMetadata"
-    >
-      您的浏览器不支持 video 标签，请升级浏览器。
-    </video>
-    <p v-else-if="loading">视频加载中...</p>
-    <p v-else class="error">请输入有效视频ID并点击跳转播放</p>
-  </div>
+        <!-- 视频资料渲染 -->
+        <div v-if="currentVideoId" style="margin: 20px 0; padding: 15px; border: 1px solid #eee; border-radius: 8px;">
+            <h2 style="margin: 0 0 8px 0; color: #5650a8;">{{ currentVideoInfo.title || '无标题' }}</h2>
+            <p style="margin: 0 0 4px 0; color: #666;">作者：{{ currentVideoInfo.author || '未知作者' }}</p>
+            <!-- 新增：视频创建时间展示 -->
+            <p style="margin: 0; color: #999; font-size: 14px;">上传时间：{{ formatTime(currentVideoInfo.createdTime) || '未知时间' }}</p>
+        </div>
+
+        <video 
+            controls 
+            playsinline
+            :src="currentVideoId ? `http://localhost:8080/video/${currentVideoId}` : ''"
+            width="800" 
+            min-width="300"
+            style="display: block; margin-top: 20px; border: 1px solid #eee;"
+            v-if="currentVideoId"
+            @progress="handleProgress"
+            @loadedmetadata="handleLoadedMetadata"
+            id="videoPlay"
+        >
+            您的浏览器不支持 video 标签，请升级浏览器。
+        </video>
+        
+        <!-- 新增：视频描述展示区域（视频下方） -->
+        <div v-if="currentVideoId" style="margin: 15px 0; padding: 15px; border: 1px solid #eee; border-radius: 8px; max-width: 800px;">
+            <h3 style="margin: 0 0 8px 0; color: #5650a8; font-size: 16px;">视频介绍</h3>
+            <p style="margin: 0; color: #666; line-height: 1.6;">{{ currentVideoInfo.description || '视频还没有描述哦~' }}</p>
+        </div>
+
+        <p v-else-if="loading">视频加载中...</p>
+        <p v-else class="error">请输入有效视频ID并点击跳转播放</p>
+    </div>
 </template>
 
 <script setup>
-  import { ref, watch } from 'vue';
-  import { useRoute, useRouter } from 'vue-router';
+    import { ref, watch, onMounted } from 'vue';
+    import { useRoute, useRouter } from 'vue-router';
+    import request from '../../api/request';
+    // 新增：导入视频详情API（已整合的api）
+    import { getVideoInfo } from '../../api/modules/videoApi';
 
-  // 1. 路由与响应式变量（完全保留原页面逻辑）
-  const route = useRoute();
-  const router = useRouter();
-  const inputValue = ref('');
-  const currentVideoId = ref('');
-  const loading = ref(false);
+    const route = useRoute();
+    const router = useRouter();
+    const inputValue = ref('');
+    const currentVideoId = ref('');
+    const loading = ref(false);
 
-  // 2. 跳转播放功能（和原来完全一致）
-  const goToVideo = () => {
-    const val = inputValue.value.trim();
-    if (val) {
-      router.push(`/video/${val}`);
-      inputValue.value = ''; // 清空输入框
-    } else {
-      alert('请输入有效视频ID或VID！');
-    }
-  };
+    const currentVideoInfo = ref({
+        title: "",
+        author: "",
+        // 新增：添加创建时间字段（与后端响应对齐）
+        createdTime: "",
+        // 新增：添加描述字段（与后端响应对齐）
+        description: ""
+    });
+    // 删除：移除无用的allVideos（无需全量数据匹配）
 
-  // 3. 监听路由变化，更新视频ID（核心简化：只更ID，不做额外请求）
-  watch(
-    () => route.params.videoId,
-    (newVideoId) => {
-      if (newVideoId) {
-        loading.value = true;
-        currentVideoId.value = newVideoId;
-        // video.src会自动更新，浏览器发起原生请求（含Range）
-        loading.value = false;
-      } else {
-        currentVideoId.value = '';
-      }
-    },
-    { immediate: true } // 组件加载时立即执行
-  );
+    const goToVideo = () => {
+        const val = inputValue.value.trim();
+        if (val) {
+            router.push(`/video/${val}`);
+            inputValue.value = '';
+        } else {
+            alert('请输入有效视频id或vid！');
+        }
+    };
 
-  // 4. 可选：播放进度监听（查看缓冲状态）
-  const handleProgress = (e) => {
-    const video = e.target;
-    const buffered = video.buffered;
-    if (buffered.length > 0) {
-      const bufferedEnd = buffered.end(buffered.length - 1);
-      const duration = video.duration;
-      console.log(`已缓冲：${(bufferedEnd / duration * 100).toFixed(1)}%`);
-    }
-  };
+    // 新增：格式化时间函数（处理后端返回的ISO格式时间）
+    const formatTime = (timeStr) => {
+        if (!timeStr) return '';
+        const date = new Date(timeStr);
+        // 格式：2025-11-30 18:59:34（补零处理，确保格式统一）
+        return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
+    };
 
-  // 5. 可选：视频元数据加载完成（显示总时长）
-  const handleLoadedMetadata = (e) => {
-    const video = e.target;
-    const duration = video.duration;
-    const minutes = Math.floor(duration / 60);
-    const seconds = Math.floor(duration % 60);
-    console.log(`视频总时长：${minutes}分${seconds}秒`);
-  };
+    watch(
+        () => route.params.videoId,
+        async (newVideoId) => {
+            if (newVideoId) {
+                loading.value = true;
+                currentVideoId.value = newVideoId;
+                try {
+                    // 新增：调用视频详情API
+                    const res = await getVideoInfo(newVideoId);
+                    // 直接赋值后端返回的字段（确保与VideoVO响应对齐）
+                    currentVideoInfo.value.title = res.title || '';
+                    currentVideoInfo.value.author = res.author || '未知作者';
+                    currentVideoInfo.value.createdTime = res.createdTime || '';
+                    currentVideoInfo.value.description = res.description || '';
+                } catch (err) {
+                    console.error('获取视频详情失败', err);
+                    // 错误时重置信息，避免残留数据
+                    currentVideoInfo.value = { 
+                        title: "", 
+                        author: "",
+                        createdTime: "",
+                        description: "" 
+                    };
+                } finally {
+                    loading.value = false;
+                }
+            } else {
+                currentVideoId.value = '';
+                currentVideoInfo.value = { 
+                    title: "", 
+                    author: "",
+                    createdTime: "",
+                    description: "" 
+                };
+            }
+        },
+        { immediate: true }
+    );
+
+    onMounted(() => {
+        
+    })
+
+    const handleProgress = (e) => {
+        const video = e.target;
+        const buffered = video.buffered;
+        if (buffered.length > 0) {
+            const bufferedEnd = buffered.end(buffered.length - 1);
+            const duration = video.duration;
+            console.log(`已缓冲：${(bufferedEnd / duration * 100).toFixed(1)}%`);
+        }
+    };
+
+    const handleLoadedMetadata = (e) => {
+        const video = e.target;
+        const duration = video.duration;
+        const minutes = Math.floor(duration / 60);
+        const seconds = Math.floor(duration % 60);
+        console.log(`视频总时长：${minutes}分${seconds}秒`);
+    };
 </script>
 
 <style scoped>
-  /* 完全保留原页面样式，无任何修改 */
-  .video-container {
-    padding: 20px;
-    background: #fff;
-    min-height: calc(100vh - 40px);
-  }
-  #btn {
-    color: white;
-    background-color: aqua;
-    margin-left: 10px;
-    padding: 4px 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  #btn:hover {
-    background-color: #00ced1;
-  }
-  input {
-    padding: 4px 8px;
-    width: 250px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-  .error {
-    color: #ff4444;
-    margin-top: 20px;
-  }
+    .video-container {
+        position: fixed;
+        top: 100px;
+        left: 0;
+        right: 0;
+        padding: 20px;
+        background: #fff;
+        min-height: auto;
+        max-height: calc(100vh - 120px);
+        box-sizing: border-box;
+        overflow-y: auto;
+        z-index: 1;
+    }
+    #btn {
+        color: white;
+        background-color: aqua;
+        margin-left: 10px;
+        padding: 4px 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    #btn:hover {
+        background-color: #00ced1;
+    }
+    input {
+        padding: 4px 8px;
+        width: 250px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    .error {
+        color: #ff4444;
+        margin-top: 20px;
+    }
+    
 </style>

@@ -11,13 +11,16 @@ import java.util.List;
 
 public interface VideoService extends BaseService{
 
-    // --- 新增：获取视频流 ---
+    // --- 获取视频流 ---
     VideoStreamInfo getVideoStream(String filename, String rangeHeader);
+
+    // 获取视频信息
+    VideoVO getVideoInfo(String videoId);
 
     Video getVideo(Long id);
     Video getVideo(String vid);
 
-    // 新增：视频模糊(关键字)查询
+    // 视频模糊(关键字)查询
     PageResult<VideoVO> getVideoPageList(Long pageNum, Integer pageSize, String keyword);
 
     // 视频上传方法(无封面，1GB限制，全量(非分片)上传)

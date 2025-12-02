@@ -43,6 +43,7 @@ public class VideoServiceImpl implements VideoService {
     @Value("${videoArea.baseUrl}")
     private String videoBasePath;
 
+    // 视频播放——返回视频流
     @Override
     public VideoStreamInfo getVideoStream(String filename, String rangeHeader) throws BusinessException{
 
@@ -99,6 +100,14 @@ public class VideoServiceImpl implements VideoService {
             info.setContentLength(fileLength);
         }
         return info;
+    }
+
+    // 视频播放——取视频具体信息，返回VideoVO
+    @Override
+    public VideoVO getVideoInfo(String videoId){
+        Video video = findVideo(videoId);
+        String author = userMapper.findById(video.getUserId()).getUserName();
+        return makeVideoVO(video, author);
     }
 
     // 取视频文件类型私有方法
@@ -205,7 +214,8 @@ public class VideoServiceImpl implements VideoService {
         // 处理视频
         List<VideoVO> pageVideoVOList = new ArrayList<>();
         for(Video video : pageVideoList){
-            VideoVO pageVideoVO = makeVideoVO(video);
+            String author = userMapper.findById(video.getUserId()).getUserName();
+            VideoVO pageVideoVO = makeVideoVO(video, author);
             pageVideoVOList.add(pageVideoVO);
         }
 

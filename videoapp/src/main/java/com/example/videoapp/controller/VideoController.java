@@ -6,10 +6,13 @@ import com.example.videoapp.model.dto.VideoStreamInfo;
 import com.example.videoapp.model.dto.VideoUploadDTO;
 import com.example.videoapp.model.entity.Video;
 import com.example.videoapp.model.vo.PageResult;
+import com.example.videoapp.model.vo.VideoVO;
 import com.example.videoapp.service.VideoService;
 import com.example.videoapp.util.Result;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,11 +27,32 @@ public class VideoController {
     @Autowired
     private VideoService videoService;
 
+    // 测试使用
+    private static final Logger log = LoggerFactory.getLogger(VideoController.class);
+
     @GetMapping("/video/{videoId}")
     public void playVideo(@PathVariable String videoId, HttpServletRequest request, HttpServletResponse response){
         // 测试使用
 //        String rangeHeader1 = request.getHeader("Range");
 //        System.out.println("收到的Range头：" + (rangeHeader1 == null ? "null" : rangeHeader1));
+
+        // 测试使用
+        /*// 1. 打印客户端信息（是否是移动端）
+        String userAgent = request.getHeader("User-Agent");
+        // 2. 打印核心请求头（Range=分片范围，Host=请求地址）
+        String range = request.getHeader("Range");
+        String host = request.getHeader("Host");
+        // 3. 打印客户端IP
+        String clientIp = request.getRemoteAddr();
+
+
+        // 日志输出（关键信息一目了然）
+        log.info("=== 视频播放请求详情 ===");
+        log.info("客户端IP：{}", clientIp);
+        log.info("客户端类型（User-Agent）：{}", userAgent);
+        log.info("请求Range：{}", range);
+        log.info("请求Host：{}", host);
+        log.info("请求视频ID：{}", videoId);*/
 
         try{
             // 获取请求头
@@ -84,6 +108,11 @@ public class VideoController {
             }
         }
 
+    }
+
+    @GetMapping("/video/info/{videoId}")
+    public Result<VideoVO> getVideoInfoCon(@PathVariable String videoId){
+        return Result.success(videoService.getVideoInfo(videoId));
     }
 
 

@@ -13,13 +13,13 @@ public class VideoVO {
     private String description;
     private String filePath;
     private String coverPath;
-    private Long userId;
     private LocalDateTime createdTime;
+    private String author;
 
     public VideoVO() {
     }
     // 静态方法转换
-    public static VideoVO makeVideoVO(Video video){
+    public static VideoVO makeVideoVO(Video video, String author) {
         VideoVO videoVO = new VideoVO();
         videoVO.setId(video.getId());
         videoVO.setVid(video.getVid());
@@ -27,8 +27,8 @@ public class VideoVO {
         videoVO.setDescription(video.getDescription());
         videoVO.setFilePath(video.getFilePath());
         videoVO.setCoverPath(video.getCoverPath());
-        videoVO.setUserId(video.getUserId());
         videoVO.setCreatedTime(video.getCreatedTime());
+        videoVO.setAuthor(author);
         return videoVO;
     }
 }

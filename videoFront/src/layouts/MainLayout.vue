@@ -1,18 +1,18 @@
 <!-- src/layouts/MainLayout.vue -->
 <template>
-  <div class="main-layout">
-    <!-- 菜单栏 -->
-    <Navbar />
-    <!-- 页面内容区域（用 router-view 渲染子页面） -->
-    <main class="content">
-      <router-view />
-    </main>
-  </div>
+    <div class="main-layout">
+        <!-- 菜单栏 -->
+        <Navbar />
+        <!-- 页面内容区域（用 router-view 渲染子页面） -->
+        <main class="content">
+        <router-view />
+        </main>
+    </div>
 </template>
 
 <script setup>
-// 引入菜单栏组件
-import Navbar from '../components/Nacbar.vue'
+    // 引入菜单栏组件
+    import Navbar from '../components/Nacbar.vue'
 </script>
 
 <style scoped>
