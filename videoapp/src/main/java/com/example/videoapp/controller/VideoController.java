@@ -8,6 +8,7 @@ import com.example.videoapp.model.entity.Video;
 import com.example.videoapp.model.vo.PageResult;
 import com.example.videoapp.model.vo.VideoVO;
 import com.example.videoapp.service.VideoService;
+import com.example.videoapp.util.JwtUtils;
 import com.example.videoapp.util.Result;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -125,9 +126,40 @@ public class VideoController {
         return Result.success(videoService.getVideoPageList(pageNum, pageSize, keyword));
     }
 
-    @PostMapping("/video/upload")
-    public Result<Video> uploadVideo(VideoUploadDTO uploadDTO){
+    // 用户个人主页使用
+    @GetMapping("/user/videos/list")
+    public Result<PageResult> getUserVideoPageList(
+            @RequestParam(required = false) Long pageNum,
+            @RequestParam(required = false) Integer pageSize,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Long userId,
+            HttpServletRequest request
+    ){
         try{
+            String token = request.getHeader("Authorization");
+            if(token != null && token.startsWith("Bearer ")){
+                token = token.substring(7);
+            }
+            userId = JwtUtils.getUserId(token);
+            return Result.success(videoService.getUserVideoPageList(pageNum, pageSize, keyword, userId));
+        }catch (Exception e){
+            return Result.success(videoService.getUserVideoPageList(pageNum,pageSize,keyword,null));
+        }
+    }
+
+    @PostMapping("/video/upload")
+    public Result<Video> uploadVideo(VideoUploadDTO uploadDTO, HttpServletRequest request){
+        try{
+            String token = request.getHeader("Authorization");
+            if(token != null && token.startsWith("Bearer ")){
+                token = token.substring(7);
+            }
+            Long userId = JwtUtils.getUserId(token);
+            if(userId != null){
+                uploadDTO.setUserId(userId);
+            }else{
+                throw new BusinessException(ErrorCode.PARAM_ERROR, "上传用户错误");
+            }
             return Result.success(videoService.uploadVideo(uploadDTO));
         }catch (BusinessException e){
             throw e;

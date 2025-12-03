@@ -6,8 +6,11 @@ import com.example.videoapp.model.vo.UserVO;
 import com.example.videoapp.service.UserService;
 import com.example.videoapp.util.JwtUtils;
 import com.example.videoapp.util.Result;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 
 import static com.example.videoapp.model.vo.UserVO.makeUserVO;
 
@@ -49,6 +52,22 @@ public class UserController {
     @PostMapping("/register")
     public Result userRegister(@RequestBody User user){
         return Result.success(makeUserVO(userService.save(user)), "用户注册成功！");
+    }
+
+    // 供个人主页获取个人信息使用（解析token）
+    @GetMapping("/user/info")
+    public Result<UserVO> getUserInfo(HttpServletRequest request){
+        try {
+            String token = request.getHeader("Authorization");
+            if (token != null && token.startsWith("Bearer ")){
+                token = token.substring(7);
+            }
+            Long userId = JwtUtils.getUserId(token);
+            User user = userService.findById(userId);
+            return Result.success(UserVO.makeUserVO(user));
+        }catch (Exception e){
+            return Result.success(new UserVO(0l,"默认用户", LocalDateTime.now()));
+        }
     }
 
 }

@@ -5,6 +5,8 @@ import Home from '../views/Home/Home.vue'
 import Register from '../views/Register/Register.vue'
 import Video from '../views/Video/Video.vue'
 import Search from '../views/Search/Search.vue' // 导入搜索页组件
+import Profile from '../views/Profile/Profile.vue' // 导入个人主页组件
+import VideoUpload from '../views/VideoUpload/VideoUpload.vue'
 
 // 引入通用组件
 import MainLayout from '@/layouts/MainLayout.vue'
@@ -25,10 +27,7 @@ const routes = [
             requiresAuth: false  // 不需要登录验证
         }
     },
-    {
-        path: '/profile',  // 个人主页 留待拓展  记得设登录验证
-        redirect: '/' 
-    },
+    
 
     {
         path: '/',
@@ -39,6 +38,22 @@ const routes = [
                 component: Home,
                 meta: {
                     requiresAuth: false  // 不需要登录验证
+                }
+            },
+            // 个人主页路由
+            {
+                path: 'profile',  // 个人主页  记得设登录验证
+                component: Profile,
+                meta:{
+                    requiresAuth: true // 需要登录验证
+                }
+            },
+            // 视频上传页路由
+            {
+                path: 'videoUpload',
+                component: VideoUpload,
+                meta:{
+                    requiresAuth: true // 需要登录
                 }
             },
             // 搜索页路由（放在MainLayout子路由，复用顶部搜索栏和布局）

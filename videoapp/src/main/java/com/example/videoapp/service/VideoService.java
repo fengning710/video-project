@@ -22,6 +22,7 @@ public interface VideoService extends BaseService{
 
     // 视频模糊(关键字)查询
     PageResult<VideoVO> getVideoPageList(Long pageNum, Integer pageSize, String keyword);
+    PageResult<VideoVO> getUserVideoPageList(Long pageNum, Integer pageSize, String keyword, Long userId);
 
     // 视频上传方法(无封面，1GB限制，全量(非分片)上传)
     Video uploadVideo(VideoUploadDTO uploadDTO);

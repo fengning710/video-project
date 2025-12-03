@@ -1,4 +1,3 @@
-<!-- src/components/Navbar.vue -->
 <template>
     <nav class="navbar">
         <!-- 左侧 Logo -->
@@ -45,11 +44,15 @@
         <div class="navbar-user">
             <template v-if="isLogin">
                 <span class="user-name">欢迎，{{ userInfo?.userName || '用户' }}</span>
+                <!-- 新增：上传视频按钮（退出登录左边，样式匹配视频小屋） -->
+                <router-link to="/videoUpload" class="upload-btn">上传视频</router-link>
                 <button @click="handleLogout" class="logout-btn">退出登录</button>
             </template>
             <template v-else>
                 <router-link to="/login" class="login-link">登录</router-link>
                 <router-link to="/register" class="register-link">注册</router-link>
+                <!-- 新增：未登录状态也显示上传按钮 -->
+                <router-link to="/videoUpload" class="upload-btn">上传视频</router-link>
             </template>
         </div>
     </nav>
@@ -142,7 +145,7 @@
         gap: 40px; /* 导航项间距 */
     }
 
-    /* 核心：搜索固定占位容器（宽度=搜索栏总宽度，始终存在） */
+    /* 核心：搜索固定占位容器（宽度=搜索栏宽度，始终存在） */
     .search-placeholder {
         width: 350px; /* 和搜索栏总宽度一致（输入框+按钮） */
         display: flex; /* 保持和搜索栏相同的布局上下文 */
@@ -244,5 +247,22 @@
         border: 1px solid #3498db;
         padding: 4px 12px;
         border-radius: 4px;
+    }
+
+    /* 新增：上传视频按钮样式（和视频小屋颜色一致，白字） */
+    .upload-btn {
+        background-color: #1890ff; /* 匹配 navbar-logo 的颜色 */
+        color: #fff; /* 白字 */
+        border: none;
+        padding: 7px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 15px;
+        text-decoration: none;
+    }
+
+    .upload-btn:hover {
+        background-color: #096dd9; /* hover 加深色，和其他按钮风格一致 */
+        color: #fff; /* 保持白字 */
     }
 </style>

@@ -194,15 +194,60 @@ public class VideoServiceImpl implements VideoService {
         // 拼接模糊查询关键词（mybatis要求语法）
         String searchKeyword = "%" + keyword + "%";
 
+        // 适配mapper接口
+        Long userId = null;
         // 查数据库
-        List<Video> videoList = videoMapper.findVideoList(searchKeyword);
-        Long total = videoMapper.findVideoTotal(searchKeyword);
+        List<Video> videoList = videoMapper.findVideoList(searchKeyword, userId);
+        Long total = videoMapper.findVideoTotal(searchKeyword, userId);
 
         // 计算各项数据
         long totalPage = (total + pageSize - 1) / pageSize;// 标准向上取整写法
           // 起始下标
         int startIndex = (int)(pageSize * (pageNum - 1));
           //结束下标，防止超总条数
+        int endIndex = (int)Math.min(startIndex + pageSize, total);
+
+        // 截取视频列表
+        List<Video> pageVideoList = new ArrayList<>();
+        if(startIndex < total){
+            pageVideoList = videoList.subList(startIndex, endIndex);
+        }
+
+        // 处理视频
+        List<VideoVO> pageVideoVOList = new ArrayList<>();
+        for(Video video : pageVideoList){
+            String author = userMapper.findById(video.getUserId()).getUserName();
+            VideoVO pageVideoVO = makeVideoVO(video, author);
+            pageVideoVOList.add(pageVideoVO);
+        }
+
+        // 建返回列表
+        PageResult<VideoVO> pageResult = new PageResult<>(
+                pageVideoVOList,total,totalPage,pageNum,pageSize
+        );
+        return pageResult;
+    }
+
+
+    // 列表取视频方法(供用户使用) TODO: 整合前面列表查询代码
+    @Override
+    public PageResult<VideoVO> getUserVideoPageList(Long pageNum, Integer pageSize, String keyword, Long userId) {
+        if(pageNum == null || pageNum < 1){pageNum = 1l;}
+        if(pageSize == null || pageSize < 1 || pageSize > 50 ){pageSize = 10;}
+        if(keyword == null){keyword = "";}
+
+        // 拼接模糊查询关键词（mybatis要求语法）
+        String searchKeyword = "%" + keyword + "%";
+
+        // 查数据库
+        List<Video> videoList = videoMapper.findVideoList(searchKeyword, userId);
+        Long total = videoMapper.findVideoTotal(searchKeyword, userId);
+
+        // 计算各项数据
+        long totalPage = (total + pageSize - 1) / pageSize;// 标准向上取整写法
+        // 起始下标
+        int startIndex = (int)(pageSize * (pageNum - 1));
+        //结束下标，防止超总条数
         int endIndex = (int)Math.min(startIndex + pageSize, total);
 
         // 截取视频列表

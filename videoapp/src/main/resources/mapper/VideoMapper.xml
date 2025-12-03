@@ -26,6 +26,9 @@
             <if test="keyword != null and keyword != ''">
                 and title like #{keyword}          <!-- 成立则执行标签内的sql -->
             </if>
+            <if test="userId != null">
+                and user_id = #{userId}   <!-- 提供给个人主页 -->
+            </if>
         </where>
         order by createTime ASC  <!-- 改为desc为倒序 -->
     </select>
@@ -37,6 +40,9 @@
             is_deleted = 0
             <if test="keyword != null and keyword != ''">
                 and title like #{keyword}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}   <!-- 提供给个人主页 -->
             </if>
         </where>
         order by createTime ASC
