@@ -42,7 +42,7 @@ const routes = [
             },
             // 个人主页路由
             {
-                path: 'profile',  // 个人主页  记得设登录验证
+                path: 'profile',  // 个人主页  设登录验证
                 component: Profile,
                 meta:{
                     requiresAuth: true // 需要登录验证
@@ -87,6 +87,32 @@ const routes = [
 const router = createRouter({
     history: createWebHistory(),
     routes
-})
+});
+
+// 加全局前置路由守卫（使用于判断用户是否登录）
+router.beforeEach((to,from,next) =>{
+    /**
+     * 获取登录状态(2个感叹号是因为：1个判断有无token并转 boolean 值，另一个转回原来逻辑)
+     *  例：
+     *      如果有 token，取到token后getItem函数会返回字符串，经过1个!判断后转换为false，
+     *      此时使用另一个! 判断就可取得true，即获得token的逻辑，并赋给常量
+     *   因为js不能直接用字符串判断true/false
+     */ 
+    const isLogin = !!localStorage.getItem('token');
+
+    // 判断目标路由是否要登录
+    if(to.meta.requiresAuth){
+        // 需要登录的页面路由
+        if(isLogin){
+            next(); // 放行
+        }else{
+            next('/login'); // 跳登录页
+        }
+    }else{
+        // 不要登录：放行
+        next();
+    }
+
+});
 
 export default router

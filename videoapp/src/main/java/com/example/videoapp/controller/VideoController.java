@@ -123,7 +123,7 @@ public class VideoController {
             @RequestParam(required = false) Integer pageSize,
             @RequestParam(required = false) String keyword
     ){
-        return Result.success(videoService.getVideoPageList(pageNum, pageSize, keyword));
+        return Result.success(videoService.getVideoPageList(pageNum, pageSize, keyword, null));
     }
 
     // 用户个人主页使用
@@ -135,16 +135,15 @@ public class VideoController {
             @RequestParam(required = false) Long userId,
             HttpServletRequest request
     ){
-        try{
-            String token = request.getHeader("Authorization");
-            if(token != null && token.startsWith("Bearer ")){
-                token = token.substring(7);
-            }
-            userId = JwtUtils.getUserId(token);
-            return Result.success(videoService.getUserVideoPageList(pageNum, pageSize, keyword, userId));
-        }catch (Exception e){
-            return Result.success(videoService.getUserVideoPageList(pageNum,pageSize,keyword,null));
+        String token = request.getHeader("Authorization");
+        if(token != null && token.startsWith("Bearer ")){
+            token = token.substring(7);
         }
+        userId = JwtUtils.getUserId(token);
+        if(userId == null){
+            throw new BusinessException(ErrorCode.USER_WRONG_TOKEN);
+        }
+        return Result.success(videoService.getVideoPageList(pageNum, pageSize, keyword, userId));
     }
 
     @PostMapping("/video/upload")

@@ -16,8 +16,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User loginService(User user) {
-        System.out.println("userServiceImpl测试成功");
-
         User hadUser = userMapper.findByName(user.getUserName());
         if(hadUser == null){
             throw new BusinessException(ErrorCode.USER_NOT_FOUND);

@@ -48,7 +48,7 @@
             <button
                 type="submit"
                 :disabled="isUploading"
-                style="padding: 12px; background: #42b983; color: #fff; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; transition: background 0.3s;"
+                style="padding: 12px; background: #3498db; color: #fff; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; transition: background 0.3s;"
             >
                 <span v-if="isUploading">上传中...</span>
                 <span v-else>确认上传</span>

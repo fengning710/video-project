@@ -1,5 +1,7 @@
 package com.example.videoapp.controller;
 
+import com.example.videoapp.exception.BusinessException;
+import com.example.videoapp.exception.ErrorCode;
 import com.example.videoapp.model.vo.LoginResultVO;
 import com.example.videoapp.model.entity.User;
 import com.example.videoapp.model.vo.UserVO;
@@ -57,17 +59,16 @@ public class UserController {
     // 供个人主页获取个人信息使用（解析token）
     @GetMapping("/user/info")
     public Result<UserVO> getUserInfo(HttpServletRequest request){
-        try {
-            String token = request.getHeader("Authorization");
-            if (token != null && token.startsWith("Bearer ")){
-                token = token.substring(7);
-            }
-            Long userId = JwtUtils.getUserId(token);
-            User user = userService.findById(userId);
-            return Result.success(UserVO.makeUserVO(user));
-        }catch (Exception e){
-            return Result.success(new UserVO(0l,"默认用户", LocalDateTime.now()));
+        String token = request.getHeader("Authorization");
+        if (token != null && token.startsWith("Bearer ")){
+            token = token.substring(7);
         }
+        Long userId = JwtUtils.getUserId(token);
+        if(userId == null){
+            throw new BusinessException(ErrorCode.USER_WRONG_TOKEN);
+        }
+        User user = userService.findById(userId);
+        return Result.success(UserVO.makeUserVO(user));
     }
 
 }

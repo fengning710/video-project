@@ -44,15 +44,15 @@
         <div class="navbar-user">
             <template v-if="isLogin">
                 <span class="user-name">欢迎，{{ userInfo?.userName || '用户' }}</span>
-                <!-- 新增：上传视频按钮（退出登录左边，样式匹配视频小屋） -->
+                <!--上传视频按钮 -->
                 <router-link to="/videoUpload" class="upload-btn">上传视频</router-link>
                 <button @click="handleLogout" class="logout-btn">退出登录</button>
             </template>
             <template v-else>
                 <router-link to="/login" class="login-link">登录</router-link>
                 <router-link to="/register" class="register-link">注册</router-link>
-                <!-- 新增：未登录状态也显示上传按钮 -->
-                <router-link to="/videoUpload" class="upload-btn">上传视频</router-link>
+                <!-- 未登录状态也显示上传按钮 -->
+                <router-link to="/login" class="upload-btn">上传视频</router-link>
             </template>
         </div>
     </nav>

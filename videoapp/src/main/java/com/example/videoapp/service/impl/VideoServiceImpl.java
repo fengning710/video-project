@@ -183,7 +183,7 @@ public class VideoServiceImpl implements VideoService {
         return getVideo;
     }
 
-
+/*
     // 列表取视频方法
     @Override
     public PageResult<VideoVO> getVideoPageList(Long pageNum, Integer pageSize, String keyword) {
@@ -226,12 +226,12 @@ public class VideoServiceImpl implements VideoService {
                 pageVideoVOList,total,totalPage,pageNum,pageSize
         );
         return pageResult;
-    }
+    }  */
 
 
-    // 列表取视频方法(供用户使用) TODO: 整合前面列表查询代码
+    // 列表取视频方法(统一使用，模糊查询/全量查询时赋userId为null)
     @Override
-    public PageResult<VideoVO> getUserVideoPageList(Long pageNum, Integer pageSize, String keyword, Long userId) {
+    public PageResult<VideoVO> getVideoPageList(Long pageNum, Integer pageSize, String keyword, Long userId) {
         if(pageNum == null || pageNum < 1){pageNum = 1l;}
         if(pageSize == null || pageSize < 1 || pageSize > 50 ){pageSize = 10;}
         if(keyword == null){keyword = "";}
