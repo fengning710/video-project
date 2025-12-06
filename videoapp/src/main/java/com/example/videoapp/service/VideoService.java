@@ -5,23 +5,18 @@ import com.example.videoapp.model.dto.VideoUploadDTO;
 import com.example.videoapp.model.entity.Video;
 import com.example.videoapp.model.vo.PageResult;
 import com.example.videoapp.model.vo.VideoVO;
-import com.example.videoapp.util.Result;
 
-import java.util.List;
-
+// 视频业务新增接口
 public interface VideoService extends BaseService{
 
-    // --- 获取视频流 ---
+    // 获取视频流
     VideoStreamInfo getVideoStream(String filename, String rangeHeader);
 
     // 获取视频信息
     VideoVO getVideoInfo(String videoId);
 
-    Video getVideo(Long id);
-    Video getVideo(String vid);
 
     // 视频模糊(关键字)查询
-    // PageResult<VideoVO> getVideoPageList(Long pageNum, Integer pageSize, String keyword);
     PageResult<VideoVO> getVideoPageList(Long pageNum, Integer pageSize, String keyword, Long userId);
 
     // 视频上传方法(无封面，1GB限制，全量(非分片)上传)

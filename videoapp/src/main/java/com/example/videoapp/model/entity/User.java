@@ -2,7 +2,8 @@ package com.example.videoapp.model.entity;
 
 import java.time.LocalDateTime;
 
-
+// 用户实体类（对应数据库字段，供数据库操作使用）
+// 因编写时间较早，没有使用Lombok工具
 public class User {
     private Long id;
     private String userName;

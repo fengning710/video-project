@@ -7,17 +7,18 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+// 拦截工具类（查token是否有效）
 @Component
 public class JwtInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        // 1. 从请求头取token
+        // 从请求头取token
         String token = request.getHeader("Authorization");
-        // 2. 处理Bearer前缀（和前端对应）
+        // 处理Bearer前缀（和前端对应）
         if (token != null && token.startsWith("Bearer ")) {
             token = token.substring(7); // 去掉"Bearer "
         }
-        // 3. 验证token有效性
+        // 验证token有效性
         if(token == null){
             throw new BusinessException(ErrorCode.USER_NOT_LOGIN);
         }
@@ -28,4 +29,3 @@ public class JwtInterceptor implements HandlerInterceptor {
         return true;
     }
 }
-

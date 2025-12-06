@@ -16,41 +16,43 @@ import java.time.LocalDateTime;
 
 import static com.example.videoapp.model.vo.UserVO.makeUserVO;
 
+// 用户相关和前端对接的接口类
 @RestController
 public class UserController {
+    // 字段注入
     @Autowired
     private UserService userService;
 
+    // 登录接口
     @PostMapping("/login")
     public Result loginControl(@RequestBody User user){
-        // 1. 调用 Service（这里会自动捕获 BusinessException，由全局异常处理器处理）
+        // 调用 Service（会自动捕获 BusinessException，由全局异常处理器处理）
         User userLogin = userService.loginService(user);
 
-        // 2. 生成 token（Controller 层的工作）
+        // 生成 token（调用 JwtUtils 的静态方法生成）
         String token = JwtUtils.createToken(userLogin.getId());
 
-        // 3. 包装成 LoginResultVO 和 Result 返回（Controller 层的工作）
+        // 包装成 LoginResultVO 并打入 Result 返回
         UserVO userVO = UserVO.makeUserVO(userLogin);
-        LoginResultVO resultVO = new LoginResultVO();
-        resultVO.setUser(userVO);
-        resultVO.setToken(token);
-
+        LoginResultVO resultVO = new LoginResultVO(userVO, token);
         return Result.success(resultVO);
-//        return userService.loginService(user);
     }
 
+    // 根据用户名查找用户接口（项目未实际用到） 后续可扩展为通过搜索栏查询用户
     @GetMapping("/findUser")
     public Result findUserByName(@RequestParam String name){
         User user = userService.findUserByName(name);
         return Result.success(user);
     }
 
+    // 根据用户id查找用户接口（项目未实际用到）
     @GetMapping("/findUserById")
     public Result findUserById(@RequestParam Long id){
         UserVO userVO = makeUserVO(userService.findById(id));
         return Result.success(userVO);
     }
 
+    // 注册接口
     @PostMapping("/register")
     public Result userRegister(@RequestBody User user){
         return Result.success(makeUserVO(userService.save(user)), "用户注册成功！");

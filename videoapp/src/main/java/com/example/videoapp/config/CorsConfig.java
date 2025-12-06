@@ -5,6 +5,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 // 标记为配置类，Spring会自动加载该类的配置
+// 跨域配置类
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
 

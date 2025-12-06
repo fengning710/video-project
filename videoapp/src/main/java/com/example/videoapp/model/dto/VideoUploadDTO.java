@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NonNull;
 import org.springframework.web.multipart.MultipartFile;
 
+// 视频信息传输类（视频上传使用 前端->后端）
 @Data
 public class VideoUploadDTO {
     private MultipartFile file; // 视频文件流

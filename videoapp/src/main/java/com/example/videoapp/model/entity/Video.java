@@ -6,6 +6,7 @@ import lombok.NonNull;
 
 import java.time.LocalDateTime;
 
+// 视频实体类（对应数据库字段，供数据库操作使用）
 @Data
 @Builder
 public class Video {

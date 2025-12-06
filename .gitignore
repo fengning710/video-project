@@ -41,11 +41,15 @@ videoapp/.gitignore
 !videoapp/**/src/test/**/build/
 
 # 后端敏感配置（本地开发环境）
-videoapp/src/main/resources/application-dev.yml
-videoapp/src/main/resources/application-local.yml
+# 存放私有数据，绝对不能公开
 videoapp/src/main/resources/application-private.yml
 videoapp/src/main/resources/application.txt
-videoapp/src/main/resources/application.yml
+# 后续可以公开（隐私数据已经转移到private内）
+# videoapp/src/main/resources/application.yml
+
+#后端杂物（测试类等）
+videoapp/src/main/java/com/example/videoapp/controller/test
+videoapp/src/main/java/com/example/videoapp/testDemo
 
 # ===================== 前端子目录（videoFront/）忽略项 =====================
 # 前端日志文件

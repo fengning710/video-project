@@ -2,6 +2,8 @@ package com.example.videoapp.util;
 
 import java.time.LocalDateTime;
 
+// 核心：前端响应类（除了视频流响应）
+// 目的：统一返回前端的响应信息规格，方便前端解析及获取信息并渲染
 public class Result<T> {
     //提示信息，成功为“success”，失败为具体信息
     private String message;
@@ -12,8 +14,10 @@ public class Result<T> {
     //处理时间
     private LocalDateTime time;
 
+    // 业务成功执行调用的静态工厂方法
     public static <T> Result<T> success(T getData){
         Result result = new Result();
+        //直接设定业务码为 200
         result.setCode(200);
         result.setMessage("success");
         result.setData(getData);
@@ -21,6 +25,7 @@ public class Result<T> {
         return result;
     }
 
+    // 重载：可自定义成功信息描述
     public static <T> Result<T> success(T getData, String message){
         Result result = new Result();
         result.setCode(200);
@@ -30,6 +35,7 @@ public class Result<T> {
         return result;
     }
 
+    // 核心：业务失败调用的静态工厂方法
     public static <T> Result<T> fail(Integer code, String message){
         Result result = new Result();
         result.setCode(code);

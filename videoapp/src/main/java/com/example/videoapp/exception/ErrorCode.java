@@ -1,8 +1,9 @@
 package com.example.videoapp.exception;
 
+// 业务码枚举
 public enum ErrorCode {
     // 系统通用
-    SUCCESS(200, "成功"),
+    SUCCESS(200, "成功"), // 一般直接调Result类的success静态方法
     SYSTEM_ERROR(500, "系统异常，请稍后再试"),
     PARAM_ERROR(400, "参数错误"),
 
@@ -15,7 +16,7 @@ public enum ErrorCode {
 
     // 视频相关
     VIDEO_NOT_FOUND(411, "视频不存在"),
-    VIDEO_NO_PERMISSION(412, "无权限访问该视频"),
+    VIDEO_NO_PERMISSION(412, "无权限访问该视频"),  // 预留后续添加VIP功能
     VIDEO_TOO_MAX(413, "视频大小超出上传限制"),
     VIDEO_INVALID_TYPE(414, "上传视频格式错误"),
 
@@ -26,6 +27,7 @@ public enum ErrorCode {
     private final int code;       // 状态码
     private final String message; // 错误信息
 
+    // 枚举构造方法(默认private)，仅提供给自身的枚举常量使用
     ErrorCode(int code, String message) {
         this.code = code;
         this.message = message;

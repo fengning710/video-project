@@ -1,0 +1,47 @@
+spring:
+  application:
+    name: videoapp
+  profiles:
+    include: private
+  servlet:
+    multipart:
+      max-file-size: 1024MB
+      max-request-size: 1024MB
+
+  #数据库相关配置文件
+  datasource:
+    url: jdbc:mysql://localhost:3306/video_db?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: "请设置数据库用户"  # 新建application-private.yml 添加配置
+    password: "请设置数据库密码"
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+#MyBatis 数据库管理相关配置文件
+mybatis:
+    mapper-locations: classpath:mapper/*.xml
+  # 配置实体类的包路径（用于自动识别实体类，简化XML中的resultType）
+    type-aliases-package: com.example.videoapp.model.entity
+    configuration:
+  # 开启驼峰命名映射（表字段user_name → 实体类userName）
+        map-underscore-to-camel-case: true
+
+# 设置局域网访问
+server:
+  address: 0.0.0.0 # 允许局域网访问（默认可能不写，但部分环境需要显式配置）
+  port: 8080 # 后端端口，和前端baseUrl中的端口一致
+
+#配置文件测试
+testDemo:
+  name: 流萤
+
+
+# 视频上传配置：引用根路径
+video:
+  upload:
+    # 请在application-private.yml 中添加设置本地视频存储地址
+    base-path: ${videoArea.baseUrl}
+    allow-types: mp4,avi,mov,mkv,flv,webm
+    max-size: 1073741824
+
+videoArea:
+  baseUrl: "请自行添加实际本地目录" # 必须要填写这个，否则会影响视频播放逻辑
+

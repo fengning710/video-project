@@ -9,14 +9,15 @@ import java.util.Base64;
 import java.util.Date;
 
 // 注：本类请学习
+// Jwt的 token 生成解析 工具类
 public class JwtUtils {
     // 过期时间： 2小时
     private static final long EXPIRATION_TIME = 2 * 60 * 60 * 1000;
-    // 密钥
+    // 密钥（实际项目中绝对不可写死在代码中，需要写在服务器的私密配置文件中）
     private static final String SECRET_KEY = "myFirstVideoProjectFireflyNumberKeyIs123456";
 
     /**
-     * 生成JWT token（用用户id当唯一标识）
+     * 生成JWT token（使用 用户id 作为唯一标识）
      * @param userId 数据库中的用户id（Long类型）
      * @return 生成的token字符串
      */
@@ -38,11 +39,11 @@ public class JwtUtils {
      */
     public static Long getUserId(String token){
         try {
-            // 1. 构建密钥（和生成token时一致）
+            // 构建密钥（和生成token时一致）
             byte[] keyBytes = Base64.getDecoder().decode(SECRET_KEY);
             SecretKey secretKey = new SecretKeySpec(keyBytes, SignatureAlgorithm.HS256.getJcaName());
 
-            // 2. 解析token，获取存储的userId字符串，转成Long
+            // 解析token，获取存储的userId字符串，转成Long
             String userIdStr = Jwts.parserBuilder()
                     .setSigningKey(secretKey) // 设置签名密钥（必须和生成时一致）
                     .build()

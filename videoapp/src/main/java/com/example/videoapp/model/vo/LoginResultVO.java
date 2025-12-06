@@ -1,5 +1,8 @@
 package com.example.videoapp.model.vo;
 
+// 登录结果展示类（去除隐私信息，传输到前端供信息展示）
+// 包装了用户展示类
+// 因编写时间较早，未使用Lombok工具自动添加get/set方法和构造方法
 public class LoginResultVO {
     private UserVO user;
     private String token;

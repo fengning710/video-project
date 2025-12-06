@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+// 视频展示类（去除隐私信息，传输到前端供信息展示）
 @Data
 public class VideoVO {
     private Long id;
@@ -12,13 +13,13 @@ public class VideoVO {
     private String title;
     private String description;
     private String filePath;
-    private String coverPath;
+    private String coverPath; // 封面路径（后续扩展展示视频封面使用）
     private LocalDateTime createdTime;
     private String author;
 
     public VideoVO() {
     }
-    // 静态方法转换
+    // 静态方法转换（将 Video 实体类+用户名 转换为展示类）
     public static VideoVO makeVideoVO(Video video, String author) {
         VideoVO videoVO = new VideoVO();
         videoVO.setId(video.getId());

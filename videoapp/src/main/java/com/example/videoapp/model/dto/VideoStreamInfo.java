@@ -2,6 +2,7 @@ package com.example.videoapp.model.dto;
 
 import lombok.Data;
 
+// 视频流传输类（视频播放使用 后端->前端）
 @Data
 public class VideoStreamInfo {
     private String filePath;

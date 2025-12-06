@@ -8,25 +8,30 @@ import com.example.videoapp.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
+// 用户业务实现类
 @Service
 public class UserServiceImpl implements UserService {
+    // 字段注入
     @Autowired
     private UserMapper userMapper;
 
+    // 登录业务实现（核心）
     @Override
     public User loginService(User user) {
+        // 数据库查对应用户名（唯一）的用户
         User hadUser = userMapper.findByName(user.getUserName());
-        if(hadUser == null){
+        if(hadUser == null){ // 数据库查不到
             throw new BusinessException(ErrorCode.USER_NOT_FOUND);
         }
+        // 验证密码
         if(!hadUser.getUserPassword().equals(user.getUserPassword())){
             throw new BusinessException(ErrorCode.PASSWORD_ERROR);
         }
+        // 返回用户信息供前端渲染
         return hadUser;
-        //return Result.success(makeUserVO(hadUser),"登录成功");
     }
 
+    // 查用户（实际未用到）
     @Override
     public User findUserByName(String name) {
         if(name == null || name.isEmpty()){
@@ -37,27 +42,29 @@ public class UserServiceImpl implements UserService {
             throw new BusinessException(ErrorCode.USER_NOT_FOUND);
         }
         return user;
-        //return Result.success(makeUserVO(user));
     }
 
+    // 通过id查用户实现方法
     @Override
     public User findById(Long id) {
+        // 初步判断id
         if(id == null){
             throw new BusinessException(ErrorCode.PARAM_ERROR,"id不能为空！");
         }else if(id < 0){
             throw new BusinessException(ErrorCode.PARAM_ERROR, "id不能为复数！");
         }
+        // 数据库查询
         User user = userMapper.findById(id);
-        if(user == null){
+        if(user == null){ // 查不到则抛异常
             throw new BusinessException(ErrorCode.USER_NOT_FOUND);
         }
         return user;
-        //return Result.success(makeUserVO(user));
     }
 
+    // 注册业务实现
     @Override
     public User save(User user) {
-        //获取对象的判断
+        //对传入用户对象的判断
         if(user == null){
             throw new BusinessException(ErrorCode.PARAM_ERROR, "用户参数为空");
         }
@@ -71,7 +78,7 @@ public class UserServiceImpl implements UserService {
         }
         // 数据库找用户，判断是否存在
         User hadUser = userMapper.findByName(user.getUserName());
-        if(hadUser != null){
+        if(hadUser != null){ // 查到则抛异常（因为是注册逻辑）
             throw new BusinessException(ErrorCode.USER_HAD_FOUND);
         }
         // 创建，判断修改行数是否大于0
@@ -79,9 +86,9 @@ public class UserServiceImpl implements UserService {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "系统出错，注册失败，请重新再试");
         }
         return userMapper.findByName(user.getUserName());
-        //return Result.success(makeUserVO(userMapper.findByName(user.getUserName())), "用户注册成功！");
     }
 
+    // 暂时未实现
     @Override
     public User deleteById(Long id) {
         return null;

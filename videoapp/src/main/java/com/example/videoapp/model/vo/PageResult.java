@@ -4,6 +4,8 @@ import lombok.Data;
 
 import java.util.List;
 
+// 视频列表展示类（包装视频信息列表和列表信息）
+// 避免使用Map结构
 @Data
 public class PageResult<T> {
     private List<T> data;  // 列表数据
