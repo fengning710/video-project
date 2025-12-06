@@ -1,3 +1,4 @@
+<!-- 注册页面组件 -->
 <template>
     <div class="Login-container">
         <div class="Login-card">
@@ -31,67 +32,67 @@
 </template>
 
 <script setup>
-    // 1. 导入 reactive（用于创建响应式对象）
-import { reactive, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { userRegister } from '@/api/modules/userApi';
+    // 导入 reactive（用于创建响应式对象）
+    import { reactive, ref } from 'vue';
+    import { useRouter } from 'vue-router';
+    import { userRegister } from '@/api/modules/userApi';
 
-// 2. 定义 form 响应式对象，包含模板中用到的属性
-const form = reactive({
-  userName: '', // 用户名
-  password: '', // 密码
-  confirmPassword: '' // 确认密码
-});
-const loading = ref(false);
-const errorMsg = ref("");
-const successMsg = ref("");
-const loadingMsg = ref("注册中，请稍后...");
+    // 定义 form 响应式对象，包含模板中用到的属性
+    const form = reactive({
+    userName: '', // 用户名
+    password: '', // 密码
+    confirmPassword: '' // 确认密码
+    });
+    const loading = ref(false);
+    const errorMsg = ref("");
+    const successMsg = ref("");
+    const loadingMsg = ref("注册中，请稍后...");
 
-// 3. 新增路由，用来跳转页面
-const router = useRouter();
+    // 新增路由，用来跳转页面
+    const router = useRouter();
 
-// 4. 按钮点击函数（async 异步操作，配合 await 使用）
-const toRegister = async() => {
-    if (!form.userName.trim()) {
-        errorMsg.value = "用户名不能为空";
-        successMsg.value = null;
-        return;
+    // 按钮点击函数（async 异步操作，配合 await 使用）
+    const toRegister = async() => {
+        if (!form.userName.trim()) {
+            errorMsg.value = "用户名不能为空";
+            successMsg.value = null;
+            return;
+        }
+        if (!form.password.trim() || !form.confirmPassword.trim()) {
+            errorMsg.value = "密码不能为空";
+            successMsg.value = null;
+            return;
+        }
+        if (form.password !== form.confirmPassword) {
+            errorMsg.value = "两次输入的密码不一致";
+            successMsg.value = null;
+            return;
+        }
+
+        try{
+            // 开始注册流程，渲染字样
+            loading.value = true;
+            errorMsg.value = null;
+            
+            const response = await userRegister({
+                userName: form.userName,
+                userPassword: form.password
+            })
+            successMsg.value = "注册成功！即将跳转到登录页面...";
+            errorMsg.value = null;
+
+            // 注册成功后，延时跳转到登录页面
+            setTimeout(() => {
+                router.push('/login')
+            }, 2000);
+            
+        }catch (error) {
+            errorMsg.value = error || "注册失败，请稍后重试";
+            successMsg.value = null;
+        }finally {
+            loading.value = false;
+        }
     }
-    if (!form.password.trim() || !form.confirmPassword.trim()) {
-        errorMsg.value = "密码不能为空";
-        successMsg.value = null;
-        return;
-    }
-    if (form.password !== form.confirmPassword) {
-        errorMsg.value = "两次输入的密码不一致";
-        successMsg.value = null;
-        return;
-    }
-
-    try{
-        // 开始注册流程，渲染字样
-        loading.value = true;
-        errorMsg.value = null;
-        
-        const response = await userRegister({
-            userName: form.userName,
-            userPassword: form.password
-        })
-        successMsg.value = "注册成功！即将跳转到登录页面...";
-        errorMsg.value = null;
-
-        // 注册成功后，延时跳转到登录页面
-        setTimeout(() => {
-            router.push('/login')
-        }, 2000);
-        
-    }catch (error) {
-        errorMsg.value = error || "注册失败，请稍后重试";
-        successMsg.value = null;
-    }finally {
-        loading.value = false;
-    }
-}
 
 </script>
 
@@ -128,7 +129,7 @@ const toRegister = async() => {
         background-repeat: no-repeat;
         background-position: left top;
 
-        /* 关键：补全flex居中属性 */
+        /* flex居中属性 */
         display: flex;
         justify-content: center; /* 水平居中 */
         align-items: center; /* 垂直居中 */
@@ -136,23 +137,23 @@ const toRegister = async() => {
         padding: 0 0; /* 避免容器自身有默认padding */
     }
 
-    /* 输入框专属样式，仅登录页生效 */
-.login-input {
-    width: 240px; /* 适配卡片宽度 */
-    height: 36px;
-    margin-left: 8px; /* 与标签隔开一点距离 */
-    padding: 0 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-}
-.login-input:focus {
-    outline: none;
-    border-color: aqua; /* 与按钮颜色呼应 */
-    box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.2); /* 聚焦高亮 */
-}
+    /* 输入框专属样式，复用登录页逻辑 */
+    .login-input {
+        width: 240px; /* 适配卡片宽度 */
+        height: 36px;
+        margin-left: 8px; /* 与标签隔开一点距离 */
+        padding: 0 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+    .login-input:focus {
+        outline: none;
+        border-color: aqua; /* 与按钮颜色呼应 */
+        box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.2); /* 聚焦高亮 */
+    }
 
-.Login-nologin{
-    margin: 0 0 0 300px;
-}
+    .Login-nologin{
+        margin: 0 0 0 300px;
+    }
 </style>

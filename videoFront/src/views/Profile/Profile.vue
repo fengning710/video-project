@@ -1,3 +1,4 @@
+<!-- 个人主页组件 -->
 <template>
     <div class="container" style="width: 1200px; margin: 0 auto; padding: 20px 0;">
         <!-- 个人信息模块（极简样式） -->
@@ -22,7 +23,7 @@
             </div>
         </div>
 
-        <!-- 分页组件（适配手动分页逻辑） -->
+        <!-- 分页部分（适配手动分页逻辑） -->
         <div class="pagination" style="margin: 40px 0; text-align: center;">
             <button 
                 @click="handlePageChange(pageNum - 1)" 
@@ -46,52 +47,52 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import request from '@/api/request'; // 复用已有的请求封装
+    import { ref, onMounted } from 'vue';
+    import request from '@/api/request'; // 复用已有的请求封装
 
-// 个人信息
-const userInfo = ref({});
-// 视频列表相关
-const videoList = ref([]);
-const pageNum = ref(1); // 当前页
-const pageSize = ref(10); // 每页条数
-const total = ref(0); // 总条数
-const totalPage = ref(0); // 总页数
+    // 个人信息
+    const userInfo = ref({});
+    // 视频列表相关
+    const videoList = ref([]);
+    const pageNum = ref(1); // 当前页
+    const pageSize = ref(10); // 每页条数
+    const total = ref(0); // 总条数
+    const totalPage = ref(0); // 总页数
 
-// 查个人信息（后端固定返回，接口不变）
-const getUserInfo = async () => {
-    try {
-        const res = await request.get('/user/info');
-        userInfo.value = res;
-    } catch (err) {
-        console.error('查个人信息失败：', err);
-    }
-};
+    // 查个人信息（后端固定返回，接口不变）
+    const getUserInfo = async () => {
+        try {
+            const res = await request.get('/user/info');
+            userInfo.value = res;
+        } catch (err) {
+            console.error('查个人信息失败：', err);
+        }
+    };
 
-// 查我的视频列表（适配接口 /user/videos/list，不用传userId）
-const getUserVideoList = async () => {
-    try {
-        const res = await request.get('/user/videos/list', {
-            params: { pageNum: pageNum.value, pageSize: pageSize.value }
-        });
-        videoList.value = res.data;
-        total.value = res.total;
-        totalPage.value = res.totalPage;
-    } catch (err) {
-        console.error('查我的视频失败：', err);
-    }
-};
+    // 查我的视频列表（适配接口 /user/videos/list，不用传userId）
+    const getUserVideoList = async () => {
+        try {
+            const res = await request.get('/user/videos/list', {
+                params: { pageNum: pageNum.value, pageSize: pageSize.value }
+            });
+            videoList.value = res.data;
+            total.value = res.total;
+            totalPage.value = res.totalPage;
+        } catch (err) {
+            console.error('查我的视频失败：', err);
+        }
+    };
 
-// 分页切换
-const handlePageChange = (newPage) => {
-    if (newPage < 1 || newPage > totalPage.value) return;
-    pageNum.value = newPage;
-    getUserVideoList();
-};
+    // 分页切换
+    const handlePageChange = (newPage) => {
+        if (newPage < 1 || newPage > totalPage.value) return;
+        pageNum.value = newPage;
+        getUserVideoList();
+    };
 
-// 页面加载时请求数据
-onMounted(() => {
-    getUserInfo();
-    getUserVideoList();
-});
+    // 页面加载时请求数据
+    onMounted(() => {
+        getUserInfo();
+        getUserVideoList();
+    });
 </script>

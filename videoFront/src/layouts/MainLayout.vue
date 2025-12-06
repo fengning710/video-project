@@ -1,4 +1,5 @@
 <!-- src/layouts/MainLayout.vue -->
+ <!-- 引入菜单栏组件到其他页面组件的核心 -->
 <template>
     <div class="main-layout">
         <!-- 菜单栏 -->
@@ -16,11 +17,11 @@
 </script>
 
 <style scoped>
-/* 内容区域留顶部间距（避免被固定菜单覆盖） */
-.content {
-  margin-top: 90px; /* 与菜单高度一致 */
-  padding: 20px;
-  min-height: calc(100vh - 90px);
-  box-sizing: border-box;
-}
+    /* 内容区域留顶部间距（避免被固定菜单覆盖） */
+    .content {
+    margin-top: 80px; /* 与菜单高度一致 */
+    padding: 20px;
+    min-height: calc(100vh - 80px);
+    box-sizing: border-box;
+    }
 </style>

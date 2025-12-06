@@ -1,3 +1,4 @@
+<!-- 顶部菜单栏组件 -->
 <template>
     <nav class="navbar">
         <!-- 左侧 Logo -->
@@ -14,8 +15,9 @@
                     首页
                 </router-link>
 
+                <!-- 登录状态才显示 -->
                 <router-link 
-                    v-if="isLogin"
+                    v-if="isLogin"  
                     to="/profile" 
                     class="nav-link"
                     :class="{ active: $route.path === '/profile' }"
@@ -24,7 +26,7 @@
                 </router-link>
             </div>
 
-            <!-- 核心：固定占位容器（宽度=搜索栏宽度，始终存在） -->
+            <!-- 固定占位容器（宽度=搜索栏宽度，始终存在） -->
             <div class="search-placeholder">
                 <!-- 搜索栏：隐藏时仅自身消失，占位容器保留 -->
                 <div class="search-bar" v-if="!isSearchPage">
@@ -69,11 +71,11 @@
 
     // 搜索页判断（路由路径为 /search 时隐藏搜索栏）
     const isSearchPage = computed(() => {
-        return route.path === '/search'
+        return route.path === '/search';
     });
 
     // 搜索相关
-    const searchInput = ref('') // 绑定搜索输入框
+    const searchInput = ref(''); // 绑定搜索输入框
 
     // 搜索逻辑（跳转到搜索结果页，携带搜索关键词）
     const handleSearch = () => {
@@ -82,46 +84,46 @@
             router.push({
                 path: '/search', // 搜索结果页路径是 /search
                 query: { keyword: searchInput.value.trim() } // URL 携带关键词：/search?keyword=xxx
-            })
-            searchInput.value = '' // 清空输入框
+            });
+            searchInput.value = ''; // 清空输入框
         } else {
-            alert('请输入搜索关键词～')
+            alert('请输入搜索关键词～');
         }
     }
 
     // 页面加载读取用户信息
     onMounted(() => {
-        const storedToken = localStorage.getItem('token')
-        const storedUser = localStorage.getItem('user')
-        isLogin.value = !!storedToken
+        const storedToken = localStorage.getItem('token');  // 从localStorage本地存储中获取
+        const storedUser = localStorage.getItem('user');
+        isLogin.value = !!storedToken;
         if (storedUser) {
             try {
-                userInfo.value = JSON.parse(storedUser)
+                userInfo.value = JSON.parse(storedUser);  // 解析键值对的值
             } catch (err) {
-                console.log('用户数据解析失败', err)
-                userInfo.value = null
+                console.log('用户数据解析失败', err);
+                userInfo.value = null;
             }
         }
     })
 
     // 退出登录
     const handleLogout = () => {
-        localStorage.removeItem('token')
-        localStorage.removeItem('user')
-        userInfo.value = null
-        isLogin.value = false
-        router.push('/login')
+        localStorage.removeItem('token');    // 退出登录时清除本地存储的token和user信息
+        localStorage.removeItem('user');
+        userInfo.value = null;
+        isLogin.value = false;
+        router.push('/login');
     }
 </script>
 
 <style scoped>
-    /* 原有样式不变，新增 .navbar-middle、.search-bar 相关样式 */
+    
     .navbar {
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
-        height: 80px; /* 加高菜单高度（容纳搜索栏，默认60px → 100px） */
+        height: 80px; /* 加高菜单高度（容纳搜索栏，默认60px -> 80px） */
         background-color: #ffffff; /* 自定义背景色 */
         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         display: flex;
@@ -131,7 +133,7 @@
         z-index: 999;
     }
 
-    /* 新增：中间区域（导航项+搜索栏）布局 */
+    /* 中间区域（导航项+搜索栏）布局 */
     .navbar-middle {
         display: flex;
         flex-direction: row; /* 导航项，搜索栏平行 */
@@ -139,19 +141,19 @@
         align-items: center; /* 中间区域整体居中 */
     }
 
-    /* 原有导航项样式（可微调） */
+    /* 原有导航项样式 */
     .navbar-nav {
         display: flex;
         gap: 40px; /* 导航项间距 */
     }
 
-    /* 核心：搜索固定占位容器（宽度=搜索栏宽度，始终存在） */
+    /* 搜索固定占位容器（宽度=搜索栏宽度，始终存在） */
     .search-placeholder {
         width: 350px; /* 和搜索栏总宽度一致（输入框+按钮） */
         display: flex; /* 保持和搜索栏相同的布局上下文 */
     }
 
-    /* 新增：搜索栏样式 */
+    /* 搜索栏样式 */
     .search-bar {
         display: flex;
         gap: 8px; /* 输入框和按钮间距 */
@@ -181,7 +183,6 @@
         background-color: #2980b9; /* 按钮hover加深色 */
     }
 
-    /* 原有其他样式（Logo、导航项、用户区）不变，按需修改颜色即可 */
     .navbar-logo {
         color: #1890ff;
         font-size: 22px;
@@ -211,7 +212,7 @@
         background-color: #1890ff;
     }
 
-    /* 其余样式（.navbar-user、.user-name、.logout-btn 等）不变，按需修改颜色 */
+    
     .navbar-user {
         display: flex;
         align-items: center;
@@ -249,7 +250,7 @@
         border-radius: 4px;
     }
 
-    /* 新增：上传视频按钮样式（和视频小屋颜色一致，白字） */
+    /* 上传视频按钮样式（和视频小屋颜色一致，白字） */
     .upload-btn {
         background-color: #1890ff; /* 匹配 navbar-logo 的颜色 */
         color: #fff; /* 白字 */

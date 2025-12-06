@@ -1,9 +1,10 @@
-
+<!-- 登录页面组件 -->
 <template>
     <div class="Login-container">
         <div class="Login-card">
             <h2>登录</h2>
             
+            <!-- 信息输入框 -->
             <div class="input-item">
                 用户名：
                 <input type="text" v-model="form.userName" placeholder="请输入用户名" class="login-input"/>
@@ -22,17 +23,16 @@
             <button class="Login-btn" @click="toLogin">点击登录</button>
             <br/>
             <p id="Login-nologin">没有账号？去<router-link to="/register">注册</router-link></p>
+            <p id="Login-nologin">暂时不登录？去<router-link to="/">主页</router-link></p>
         </div>
     </div>
 </template>
 
 <script setup>
     // 导入 Vue 的 reactive 函数（用于创建响应式对象）
-    import axios from 'axios'
     import { reactive,ref } from 'vue'
     import { useRouter,useRoute } from 'vue-router'
     import { userLogin } from '@/api/modules/userApi'
-    // import { useUserStore } from '@/store/modules/user'
 
     // 定义 form 和其他响应式对象
     const form = reactive({
@@ -65,6 +65,7 @@
             //开始登录流程，渲染字样
             loading.value = true;
 
+            // 未整合api前的逻辑
             //写aixos(注意变量名，随时更改)
             // const response = await axios.post("http://localhost:8080/login",
             //     {
@@ -111,7 +112,7 @@
         margin: 20px auto;
     }
     .Login-card {
-        /* 关键：设置固定宽度（或最大宽度，避免过小屏幕变形） */
+        /* 设置固定宽度（或最大宽度，避免过小屏幕变形） */
         width: 500px; /* 固定宽度 */
         /* 或用 max-width: 90%; 限制最大宽度，适配小屏幕 */
         max-width: 90%;
@@ -134,7 +135,7 @@
         background-repeat: no-repeat;
         background-position: left top;
 
-        /* 关键：补全flex居中属性 */
+        /* flex居中属性 */
         display: flex;
         justify-content: center; /* 水平居中 */
         align-items: center; /* 垂直居中 */

@@ -11,4 +11,5 @@ public class VideoUploadDTO {
     private MultipartFile file; // 视频文件流
     private Long userId; // 上传用户id
     private String title; // 视频标题
+    private String description; //视频描述
 }

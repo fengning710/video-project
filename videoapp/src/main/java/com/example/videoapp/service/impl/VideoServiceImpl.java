@@ -293,6 +293,7 @@ public class VideoServiceImpl implements VideoService {
         MultipartFile file = uploadDTO.getFile();
         Long userId = uploadDTO.getUserId();
         String title = uploadDTO.getTitle();
+        String description = uploadDTO.getDescription();
 
         //检查视频和上传用户id
         if(file == null || file.isEmpty()){
@@ -331,7 +332,8 @@ public class VideoServiceImpl implements VideoService {
         String vid= createVid();
         // 极端情况重试
         int retryCount = 0;
-        while(checkVidExists(vid) || retryCount < 5){
+        // 当vid存在 且 重试次数小于5时可重试
+        while(checkVidExists(vid) && retryCount < 5){
             vid = createVid();
             retryCount++;
         }
@@ -361,7 +363,7 @@ public class VideoServiceImpl implements VideoService {
         }
 
         // 创建video实体对象，准备入库
-        Video video= buildVideo(vid, filePath, title, userId);
+        Video video= buildVideo(vid, filePath, title, userId, description);
 
         // 存入数据库（失败会触发@Transactional回滚，删除已存文件）
         int insertCount = videoMapper.insertVideo(video);
@@ -417,12 +419,13 @@ public class VideoServiceImpl implements VideoService {
     }
 
     private Video buildVideo(String vid, String fileSavePath,
-                             String title, Long userId){
+                             String title, Long userId,  String description){
         Video video = Video.builder()
                 .vid(vid) // 直接给 vid 赋值
                 .title(title) // 直接给 title 赋值（必填，漏了会报错）
                 .filePath(fileSavePath) // 直接给 filePath 赋值
                 .userId(userId) // 直接给 userId 赋值
+                .description(description) // 直接赋值 description
                 .build();
         return video;
     }

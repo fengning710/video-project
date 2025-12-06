@@ -13,6 +13,7 @@ export const userLogin = (params) =>{
     return request.post("/login",params);
 }
 
+// 用户注册模块化接口
 export const userRegister = (params) =>{
     return request.post("/register",params);
 }

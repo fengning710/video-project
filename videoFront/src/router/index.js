@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
 // 引入页面组件
 import Login from '../views/Login/Login.vue'
 import Home from '../views/Home/Home.vue'
@@ -66,12 +66,12 @@ const routes = [
             },
             {
                 path: 'video',       // 绝对前面不能加/
-                redirect: '/video/VMfengjin1'
+                redirect: 'video/VMfengjin1'
             },
-            {
-                path: 'video/', 
-                redirect: '/video/VMfengjin1'
-            },
+            // {  // vue router 会自动处理后面的 “/”
+            //     path: 'video/', 
+            //     redirect: '/video/VMfengjin1'
+            // },
             {
                 path: 'video/:videoId',
                 component: Video,
@@ -85,7 +85,7 @@ const routes = [
 
 // 创造路由实例
 const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHashHistory(),  // 该方法适配本地文件打开，平时可用去掉 Hash 的方法
     routes
 });
 

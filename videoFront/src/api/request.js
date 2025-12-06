@@ -32,7 +32,7 @@ request.interceptors.request.use(
 request.interceptors.response.use(
     (response) => {
 
-        // 新增：如果是blob类型（视频流），直接返回response，不进入后续JSON逻辑
+        // 如果是blob类型（视频流），直接返回response，不进入后续JSON逻辑
         if (response.config.responseType === 'blob' || response.status === 206) {
             return response; // 直接返回完整响应，包含blob数据
         }
@@ -45,7 +45,7 @@ request.interceptors.response.use(
             return result.data;
         }
 
-        //其他有响应但不是200的情况
+        //其他有响应但不是业务码200的情况
 
         if(result.code == 403 || result.code == 405){  //未登录或登录过期
             console.log(result.message);
