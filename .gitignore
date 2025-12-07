@@ -8,6 +8,8 @@
 /*.docx
 /*.txt
 
+*.zip
+
 
 
 # ===================== 后端子目录（videoapp/）忽略项 =====================
@@ -82,4 +84,5 @@ videoFront/.gitignore
 #前端杂物
 videoFront/src/assets/images/image-notUse/
 
-
+# 测试视频
+Release
