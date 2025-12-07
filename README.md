@@ -49,11 +49,11 @@
 <summary>点击展示详细步骤</summary>
 
 #### 🔧 前置准备
-==确保运行设备已安装 **MySQL 8.0+** 数据库，且 8080/3306 端口未被占用==
+**确保运行设备已安装 `MySQL 8.0+` 数据库，且 8080/3306 端口未被占用**
 
 #### 📥 步骤1️⃣：下载压缩包
 项目根目录提供完整运行包下载：  
-[VideoApp-项目压缩包.zip](https://bilibili.com)（替换为实际下载链接，如 GitHub Release/网盘）
+[VideoApp-v1.0.zip](https://github.com/Philip-9527666/video-project/releases/tag/v1.0)
 
 #### 📂 步骤2️⃣：解压项目结构
 解压后完整目录如下（前后端分离结构，清晰区分）：
@@ -71,18 +71,18 @@ VideoApp-项目压缩包/
 #### 🗄️ 步骤3️⃣：初始化数据库
 - 启动本地 MySQL 服务；
 - 执行 backend/video_db.sql 脚本（可通过 Navicat/MySQL Workbench / 命令行运行）；
-- 验证：数据库中生成 video_app 库及 user/video 表即完成。
+- 验证：数据库中生成 video_db 库及 user/video 表即完成。
 #### ▶️ 步骤4️⃣：启动后端
 打开终端 / CMD，进入 backend 目录；
 执行启动命令（确保本地已安装 JDK 17+）：
 ```bash
 java -jar videoapp-0.0.1-SNAPSHOT.jar
 ```
-✅ 成功标识：终端打印 Started VideoAppApplication in X seconds
+✅ 成功标识：终端打印 `Started VideoAppApplication in X seconds`
 #### 🖥️ 步骤5️⃣：启动前端
 - 进入 frontend/dist 目录；
-- 双击 index.html 直接运行，或用 VS Code 安装「Live Server」插件后右键打开；
-- 📝 提示：前端已内置跨域配置，无需额外修改任何文件
+- 用 VS Code 安装「Live Server」插件后右键打开(不能使用双击打开，会被浏览器本地文件跨域拦截)；
+- 📝 提示：已内置跨域配置，无需额外修改任何文件
 #### ✨ 步骤6️⃣：立即开测
 打开浏览器访问前端页面（默认本地路径），即可测试「注册 / 登录 / 上传 / 播放」全功能。
 </details>
@@ -135,7 +135,8 @@ git clone https://github.com/Philip-9527666/video-project.git
 ### ⚠️2.测试注意
 - 端口问题：保证后端端口 8080，MySQL 3306端口未被占用，如果占用可修改`application.yml`配置的端口；
 - 前端跨域问题：无需担心，后端已经配置`CorsConfig`无需进行其他处理。
-- 数据库配置：如果使用Jar包进行测试，需要保证数据库账号/密码为`root/123456`，如果不对应，建议通过源码部署并修改隐私配置 ==*记得编写补充application-private.yml文件，添加对应数据库账号密码 + 视频存储根目录*==
+- 数据库配置：如果使用Jar包进行测试，需要保证数据库账号/密码为`root/123456`，如果不对应，建议通过源码部署并修改隐私配置   
+>记得编写补充`application-private.yml`文件，添加对应数据库账号密码 + 视频存储根目录
 
 ## 项目结构（源码）
 ```plain
