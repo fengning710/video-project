@@ -53,7 +53,7 @@
 
 #### 📥 步骤1️⃣：下载压缩包
 项目根目录提供完整运行包下载：  
-[VideoApp-v1.0.zip](https://github.com/Philip-9527666/video-project/releases/tag/v1.0)
+[VideoApp-v1.0.zip](https://github.com/fengning710/video-project/releases/tag/v1.0)
 
 #### 📂 步骤2️⃣：解压项目结构
 解压后完整目录如下（前后端分离结构，清晰区分）：
@@ -99,7 +99,7 @@ java -jar videoapp-0.0.1-SNAPSHOT.jar
 #### 步骤 1：克隆项目到本地
 ```bash
 # 克隆仓库
-git clone https://github.com/Philip-9527666/video-project.git
+git clone https://github.com/fengning710/video-project.git
 ```
 
 #### 步骤 2：补全隐私配置文件（核心必做）
